@@ -21,7 +21,7 @@ If user reached the number of EAS projects limit, stop and tell them to contact 
 eas integrations:convex:connect
 ```
 
-If the eas convex command doesn't exist, stop and tell the user to contact Expo support.
+If the eas convex command doesn't exist, check if the latest eas-cli is installed, else stop and tell the user to contact Expo support.
 
 3. Persist Convex connection environment variables:
 
