@@ -51,6 +51,7 @@ watchman watch-del-all
 - Review native module changes requiring prebuild
 - Test all camera, audio, and video features
 - Verify navigation still works correctly
+- If there are breaking changes that affect how an Expo SDK API interacts with external codebases or services (e.g., changes to behavior for incoming notifications or deep links, or changes to outbound payloads to web API's), alert the user
 
 ## Prebuild for Native Changes
 
@@ -75,6 +76,7 @@ These steps only apply when `ios/` and/or `android/` directories exist in the pr
 ## Housekeeping
 
 - Review release notes for the target SDK version at https://expo.dev/changelog
+- Review the CHANGELOG.md for the target SDK version at https://github.com/expo/expo/blob/sdk-XX/CHANGELOG.md, where XX is the target SDK version (e.g., sdk-55).
 - If using Expo SDK 54 or later, ensure react-native-worklets is installed — this is required for react-native-reanimated to work.
 - Enable React Compiler in SDK 54+ by adding `"experiments": { "reactCompiler": true }` to app.json — it's stable and recommended
 - Delete sdkVersion from `app.json` to let Expo manage it automatically
@@ -106,6 +108,7 @@ Check if package.json has excluded packages:
 ```
 
 Exclusions are often workarounds that may no longer be needed after upgrading. Review each one.
+
 ## Removing patches
 
 Check if there are any outdated patches in the `patches/` directory. Remove them if they are no longer needed.
