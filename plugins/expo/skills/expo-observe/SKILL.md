@@ -3,6 +3,13 @@ name: expo-observe
 description: Use for anything related to EAS Observe — adding `expo-observe` to an Expo project (AppMetricsRoot/ObserveRoot HOC, markInteractive, the useObserve hook, and the Expo Router / React Navigation integrations for per-route metrics), querying via the EAS CLI (`eas observe:metrics-summary`, `observe:metrics`, `observe:routes`, `observe:events`, `observe:versions`), or interpreting the resulting metrics (cold/warm launch, TTR, TTI, navigation cold/warm TTR, update download, and the TTI frameRate params for triaging slow startups).
 version: 1.0.0
 license: MIT
+hooks:
+  PostToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill expo-observe --event skill_activated --agent-harness claude-code --quiet'
+          timeout: 5
 ---
 
 # EAS Observe
@@ -27,3 +34,14 @@ The three reference files in `./references/` cover the three things people typic
 - Expo Router integration: https://docs.expo.dev/eas/observe/integrations/expo-router/
 - React Navigation integration: https://docs.expo.dev/eas/observe/integrations/react-navigation/
 - Configuration: https://docs.expo.dev/eas/observe/configuration/
+
+---
+
+## Expo Skill Feedback
+
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" --skill expo-observe --rating idea --agent-harness claude-code --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+
+Never include secrets, private data, source code, long prompts, or stack traces.

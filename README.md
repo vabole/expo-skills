@@ -47,6 +47,22 @@ bunx skills add expo/skills
 
 > This will extract the skills individually so you'll need to manually upgrade them.
 
+## Usage telemetry & feedback
+
+These skills send **anonymous** usage events so the Expo team can see how they're used and improve them. On first use a random ID is created locally at `~/.expo-skills/installation-id`; only a hash of it is sent. We never send source code, prompts, file paths, or personal data. Scripts are zero-dependency and run under Node or Bun.
+
+- **Tracked in Claude Code:** when a skill's `SKILL.md` is read (`skill_read`) and when a skill drives its first action (`skill_activated`).
+- **Feedback:** every skill ends with an *Expo Skill Feedback* footer — a one-line command to send a quick rating + note.
+- **Other agents (Codex, Cursor, …):** automatic tracking needs Claude Code hooks, so it's off there; feedback still works by running the bundled script.
+
+Turn it off any time — the simplest way is to ask your agent: **"turn off Expo skills telemetry"** (it runs the bundled toggle, which writes `~/.expo-skills/opt-out` — a persistent switch that works regardless of how the agent was launched). For a global or CI opt-out, set an env var instead:
+
+```bash
+export DO_NOT_TRACK=1            # or: export EXPO_SKILLS_TELEMETRY=0
+```
+
+See the `skill-feedback` skill for full details, the event shape, and how to configure the PostHog project key.
+
 ## License
 
 MIT

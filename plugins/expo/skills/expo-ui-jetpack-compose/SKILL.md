@@ -1,6 +1,13 @@
 ---
 name: Expo UI Jetpack Compose
 description: "`@expo/ui/jetpack-compose` package lets you use Jetpack Compose Views and modifiers in your app."
+hooks:
+  PostToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill expo-ui-jetpack-compose --event skill_activated --agent-harness claude-code --quiet'
+          timeout: 5
 ---
 
 > The instructions in this skill apply to SDK 55 only. For other SDK versions, refer to the Expo UI Jetpack Compose docs for that version for the most accurate information.
@@ -38,3 +45,14 @@ import { fillMaxWidth, paddingAll } from "@expo/ui/jetpack-compose/modifiers";
 
 - **LazyColumn** — Use instead of react-native `ScrollView`/`FlatList` for scrollable lists. Wrap in `<Host style={{ flex: 1 }}>`.
 - **Icon** — Use `<Icon source={require('./icon.xml')} size={24} />` with Android XML vector drawables. To get icons: go to [Material Symbols](https://fonts.google.com/icons), select an icon, choose the Android platform, and download the XML vector drawable. Save these as `.xml` files in your project's `assets/` directory (e.g. `assets/icons/wifi.xml`). Metro bundles `.xml` assets automatically — no metro config changes needed.
+
+---
+
+## Expo Skill Feedback
+
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" --skill expo-ui-jetpack-compose --rating idea --agent-harness claude-code --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+
+Never include secrets, private data, source code, long prompts, or stack traces.

@@ -3,6 +3,13 @@ name: native-data-fetching
 description: Use when implementing or debugging ANY network request, API call, or data fetching. Covers fetch API, React Query, SWR, error handling, caching, offline support, and Expo Router data loaders (`useLoaderData`).
 version: 1.0.0
 license: MIT
+hooks:
+  PostToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill native-data-fetching --event skill_activated --agent-harness claude-code --quiet'
+          timeout: 5
 ---
 
 # Expo Networking
@@ -505,3 +512,14 @@ User: "Where should I put my API key?"
 
 User: "How do I load data for a page in Expo Router?"
 -> See references/expo-router-loaders.md for route-level loaders (web, SDK 55+). For native, use React Query or fetch.
+
+---
+
+## Expo Skill Feedback
+
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" --skill native-data-fetching --rating idea --agent-harness claude-code --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+
+Never include secrets, private data, source code, long prompts, or stack traces.

@@ -1,0 +1,137 @@
+---
+name: skill-feedback
+description: Submit feedback about Expo skills, and how the bundled usage telemetry works. Use when an Expo skill was useful, confusing, broken, missing context, or worth improving.
+hooks:
+  PostToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill skill-feedback --event skill_activated --agent-harness claude-code --quiet'
+          timeout: 5
+---
+
+# Skill Feedback
+
+The shared feedback + usage-telemetry helper for the Expo skills. Every skill ends
+with an `Expo Skill Feedback` footer that points here. It sends anonymous events to
+PostHog so the Expo team can see how skills are used and where they need work.
+
+No setup, no env vars, and no user token are required. On first send it creates one
+random local installation ID at `~/.expo-skills/installation-id` and sends only a
+short **hash** of it. Hostnames, usernames, emails, file paths, source code, prompts,
+tool inputs, and machine identifiers are **never** sent.
+
+## Runtime
+
+Scripts are plain JavaScript and run under **Node or Bun** — both ship the built-ins
+they use (`crypto`, `https`, `fs`). `scripts/run.sh` picks whichever is installed
+(`node`, then `bun`) and does nothing if neither is found, so a missing runtime never
+blocks a tool call. Node/Bun is a hard requirement for Expo development, so it is
+effectively always present where these skills run.
+
+## Events
+
+| Event | When | How |
+| --- | --- | --- |
+| `skill_read` | A skill's `SKILL.md` is read | Plugin `Read` hook (Claude Code), scoped to this plugin |
+| `skill_activated` | A skill is active and the agent makes its first tool call | Per-skill `PostToolUse` hook (Claude Code), deduped per session |
+| `skill_feedback` | You submit feedback | Manual — the command below |
+
+## Submitting feedback
+
+Keep it to 1-3 short sentences, name the skill, and prefer concrete observations.
+
+**Claude Code** (`${CLAUDE_SKILL_DIR}` resolves to the active skill's folder):
+
+```bash
+sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" \
+   "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" \
+   --skill expo-deployment --rating useful --agent-harness claude-code \
+   --text "TestFlight steps were clear and worked first try."
+```
+
+**Other agents (Codex, etc.)** — run the same bundled script with `node` or `bun`,
+using its path on disk and your harness name:
+
+```bash
+node skill-feedback/scripts/skill-feedback.js \
+  --skill deslop --rating confusing --agent-harness codex \
+  --text "The skill should say which files it inspected before changing code."
+```
+
+Ratings: `useful`, `confusing`, `bug`, `idea`, `other`. Optional `--context key=value`
+(repeatable) adds small metadata. Add `--dry-run` to print the payload without sending.
+
+**Never include** secrets, private data, source code, long prompts, stack traces, API
+keys, or tokens.
+
+## Harness support
+
+- **Claude Code** — `skill_read` and `skill_activated` are automatic via hooks.
+- **Codex / Cursor / other agents** — no hook system, so automatic events do not fire.
+  The skills still work fully; only `skill_feedback` is available (run the script
+  directly). If a harness later exposes a per-tool hook adapter, the same scripts wire
+  straight into it.
+
+## Turning it off
+
+Telemetry is anonymous and on by default. The reliable, launch-independent way to opt
+out is the bundled toggle — it writes `~/.expo-skills/opt-out`, which every script checks
+before sending. Easiest: ask your agent to **"turn off Expo skills telemetry."** Or run
+it directly:
+
+```bash
+# Claude Code:
+sh "${CLAUDE_SKILL_DIR}/scripts/run.sh" "${CLAUDE_SKILL_DIR}/scripts/telemetry.js" --off
+# Other agents:
+node skill-feedback/scripts/telemetry.js --off      # --on to re-enable, --status to check
+```
+
+For CI or a global opt-out, set an env var instead. Env vars are convenient but only
+apply where they're exported and don't always reach hook subprocesses, so prefer the
+toggle for a persistent opt-out:
+
+```bash
+export EXPO_SKILLS_TELEMETRY=0   # or: false / off / no
+export DO_NOT_TRACK=1            # cross-tool standard, https://consoledonottrack.com
+```
+
+When disabled, no installation ID is created and nothing is sent. Uninstalling the plugin
+removes everything.
+
+## Configuring the PostHog project
+
+The project key lives in `scripts/telemetry_common.js`. It is a **write-only, public**
+ingestion key (`phc_...`) — the same kind embedded in browser snippets — so it is safe
+to commit. Override it per environment (e.g. a staging project) without editing the file:
+
+```bash
+export EXPO_SKILLS_POSTHOG_KEY="phc_your_project_key"
+```
+
+Only ever use a *project* key (`phc_...`) here. Never a *personal* API key (`phx_...`) —
+those are secret and used only for reading/querying (e.g. the PostHog MCP).
+
+## PostHog event shape
+
+- `event`: `skill_read` | `skill_activated` | `skill_feedback`
+- `distinct_id`: `expo-skills-installation:<installation_id_hash>`
+- `properties.source`: `expo-skills`
+- `properties.$process_person_profile`: `false`
+- `properties.skill`: skill folder name (e.g. `expo-deployment`)
+- `properties.agent_harness`: `claude-code`, `codex`, … (defaults to `unknown`)
+- `properties.model_config`: model/config string when the harness exposes it, else `unknown`
+- `properties.installation_id_hash`: anonymous hash of the local random installation ID
+- `properties.session_id_hash`: short hash only; raw session IDs are never sent
+- `skill_feedback` adds `properties.rating` and `properties.feedback_text`
+
+---
+
+## Expo Skill Feedback
+
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/scripts/run.sh" "${CLAUDE_SKILL_DIR}/scripts/skill-feedback.js" --skill skill-feedback --rating idea --agent-harness claude-code --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+
+Never include secrets, private data, source code, long prompts, or stack traces.

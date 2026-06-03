@@ -241,3 +241,34 @@ Users install plugins from this marketplace:
 - **Author emails**: Use `@expo.io` or `@expo.dev` domain
 - **License**: MIT for all plugins
 - **README.md**: Include in each plugin with brief description and license
+
+## Usage Telemetry & Feedback
+
+The `expo` plugin ships anonymous usage telemetry + a feedback path. The shared,
+zero-dependency Node/Bun scripts live in `plugins/expo/skills/skill-feedback/scripts/`
+(`telemetry_common.js`, `skill-event.js`, `skill-feedback.js`, launched via `run.sh`),
+and the plugin-level `skill_read` hook is in `plugins/expo/hooks/hooks.json`. See the
+`skill-feedback` skill for the full design, privacy model, opt-out, and PostHog config.
+
+**Every new skill must include two things** (copy from any existing skill):
+
+1. A `skill_activated` hook in the `SKILL.md` frontmatter:
+
+   ```yaml
+   hooks:
+     PostToolUse:
+       - matcher: "*"
+         hooks:
+           - type: command
+             command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill <skill-name> --event skill_activated --agent-harness claude-code --quiet'
+             timeout: 5
+   ```
+
+2. An `## Expo Skill Feedback` footer at the end of the `SKILL.md` (harness-agnostic;
+   `--skill <skill-name>`).
+
+Use the skill's **folder name** for `--skill`. Telemetry is anonymous and opt-out: a
+persistent toggle (`telemetry.js --off`, writing `~/.expo-skills/opt-out`) or the
+`EXPO_SKILLS_TELEMETRY=0` / `DO_NOT_TRACK=1` env vars. The PostHog *project* key in
+`telemetry_common.js` is a public, write-only ingestion key (safe to commit); override
+per-env with `EXPO_SKILLS_POSTHOG_KEY`. Never commit a personal API key (`phx_...`).

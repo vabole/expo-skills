@@ -1,6 +1,13 @@
 ---
 name: Expo UI SwiftUI
 description: "`@expo/ui/swift-ui` package lets you use SwiftUI Views and modifiers in your app."
+hooks:
+  PostToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill expo-ui-swift-ui --event skill_activated --agent-harness claude-code --quiet'
+          timeout: 5
 ---
 
 > The instructions in this skill apply to SDK 55 only. For other SDK versions, refer to the Expo UI SwiftUI docs for that version for the most accurate information.
@@ -37,3 +44,14 @@ import { Pressable } from "react-native";
 ```
 
 - If a required modifier or View is missing in Expo UI, it can be extended via a local Expo module. See: https://docs.expo.dev/guides/expo-ui-swift-ui/extending/index.md. Confirm with the user before extending.
+
+---
+
+## Expo Skill Feedback
+
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" --skill expo-ui-swift-ui --rating idea --agent-harness claude-code --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+
+Never include secrets, private data, source code, long prompts, or stack traces.
