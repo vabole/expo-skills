@@ -54,6 +54,21 @@ function telemetryConfigured() {
   return key.length > 0 && key !== "phc_REPLACE_ME";
 }
 
+// Best-effort agent-harness detection from environment signals — used as the
+// default when --agent-harness isn't passed. Claude Code sets CLAUDECODE; Codex
+// sets CODEX_SANDBOX (in sandboxed mode) and is moving toward AGENT=codex.
+function detectHarness() {
+  if (process.env.CLAUDECODE) return "claude-code";
+  if (
+    process.env.CODEX_SANDBOX ||
+    process.env.CODEX_SANDBOX_NETWORK_DISABLED ||
+    String(process.env.AGENT || "").toLowerCase() === "codex"
+  ) {
+    return "codex";
+  }
+  return "unknown";
+}
+
 function shortHash(value, length = 16) {
   if (!value) return null;
   return crypto.createHash("sha256").update(String(value)).digest("hex").slice(0, length);
@@ -161,6 +176,7 @@ module.exports = {
   OPT_OUT_PATH,
   telemetryDisabled,
   telemetryConfigured,
+  detectHarness,
   shortHash,
   stableStringify,
   parseContext,

@@ -15,6 +15,7 @@ const {
   SCHEMA_VERSION,
   telemetryDisabled,
   telemetryConfigured,
+  detectHarness,
   shortHash,
   stableStringify,
   parseContext,
@@ -28,7 +29,7 @@ function parseArgs(argv) {
   const args = {
     skill: "",
     event: "",
-    agentHarness: "unknown",
+    agentHarness: "",
     modelConfig: "unknown",
     context: [],
     pluginRoot: "",
@@ -107,7 +108,7 @@ function eventPayload(args, hookInput) {
     skill = skillFromFilePath(hookFilePath(hookInput));
   }
 
-  const agentHarness = args.agentHarness.trim() || "unknown";
+  const agentHarness = args.agentHarness.trim() || detectHarness();
   const modelConfig = args.modelConfig.trim() || "unknown";
 
   if (!skill) throw new Error("--skill cannot be empty");
@@ -189,7 +190,9 @@ async function main(argv) {
     if (eventName === "skill_read" && args.skill.trim() === "auto") {
       const filePath = hookFilePath(hookInput);
       if (!skillFromFilePath(filePath)) return 0;
-      if (!isUnderPluginRoot(filePath, args.pluginRoot)) return 0;
+      // Default the plugin root to this script's location (<root>/skills/skill-feedback/scripts).
+      const pluginRoot = args.pluginRoot || path.resolve(__dirname, "..", "..", "..");
+      if (!isUnderPluginRoot(filePath, pluginRoot)) return 0;
     }
 
     if (eventName === "skill_activated" && !shouldSendActivation(args, hookInput, args.dryRun)) {

@@ -6,7 +6,7 @@ hooks:
     - matcher: "*"
       hooks:
         - type: command
-          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill skill-feedback --event skill_activated --agent-harness claude-code --quiet'
+          command: 'sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js" --skill skill-feedback --event skill_activated --quiet'
           timeout: 5
 ---
 
@@ -46,12 +46,13 @@ Keep it to 1-3 short sentences, name the skill, and prefer concrete observations
 ```bash
 sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" \
    "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" \
-   --skill expo-deployment --rating useful --agent-harness claude-code \
+   --skill expo-deployment --rating useful \
    --text "TestFlight steps were clear and worked first try."
 ```
 
 **Other agents (Codex, etc.)** — run the same bundled script with `node` or `bun`,
-using its path on disk and your harness name:
+using its path on disk (the harness auto-detects; `--agent-harness` below is an
+explicit override):
 
 ```bash
 node skill-feedback/scripts/skill-feedback.js \
@@ -119,7 +120,7 @@ those are secret and used only for reading/querying (e.g. the PostHog MCP).
 - `properties.source`: `expo-skills`
 - `properties.$process_person_profile`: `false`
 - `properties.skill`: skill folder name (e.g. `expo-deployment`)
-- `properties.agent_harness`: `claude-code`, `codex`, … (defaults to `unknown`)
+- `properties.agent_harness`: auto-detected (`claude-code`, `codex`), else `unknown`; override with `--agent-harness`
 - `properties.model_config`: model/config string when the harness exposes it, else `unknown`
 - `properties.installation_id_hash`: anonymous hash of the local random installation ID
 - `properties.session_id_hash`: short hash only; raw session IDs are never sent
@@ -129,9 +130,9 @@ those are secret and used only for reading/querying (e.g. the PostHog MCP).
 
 ## Expo Skill Feedback
 
-If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script. Set `--agent-harness` to your agent (`claude-code`, `codex`, …):
+If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences with the bundled feedback script:
 
-- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/scripts/run.sh" "${CLAUDE_SKILL_DIR}/scripts/skill-feedback.js" --skill skill-feedback --rating idea --agent-harness claude-code --text "..."`
-- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags plus `--agent-harness <your-agent>`.
+- **Claude Code:** `sh "${CLAUDE_SKILL_DIR}/scripts/run.sh" "${CLAUDE_SKILL_DIR}/scripts/skill-feedback.js" --skill skill-feedback --rating idea --text "..."`
+- **Other agents (Codex, etc.):** run `skill-feedback/scripts/skill-feedback.js` (bundled in this plugin) with `node` or `bun`, same flags (the harness is auto-detected).
 
 Never include secrets, private data, source code, long prompts, or stack traces.

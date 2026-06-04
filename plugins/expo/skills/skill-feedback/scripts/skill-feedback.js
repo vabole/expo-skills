@@ -13,6 +13,7 @@ const {
   SCHEMA_VERSION,
   telemetryDisabled,
   telemetryConfigured,
+  detectHarness,
   stableStringify,
   parseContext,
   telemetryIdentity,
@@ -28,7 +29,7 @@ function parseArgs(argv) {
     skill: "",
     rating: "",
     text: "",
-    agentHarness: "unknown",
+    agentHarness: "",
     modelConfig: "unknown",
     context: [],
     dryRun: false,
@@ -53,7 +54,7 @@ function parseArgs(argv) {
 function eventPayload(args) {
   const feedback = args.text.trim().slice(0, MAX_FEEDBACK_CHARS);
   const skill = args.skill.trim();
-  const agentHarness = args.agentHarness.trim() || "unknown";
+  const agentHarness = args.agentHarness.trim() || detectHarness();
   const modelConfig = args.modelConfig.trim() || "unknown";
 
   if (!feedback) throw new Error("--text cannot be empty");
