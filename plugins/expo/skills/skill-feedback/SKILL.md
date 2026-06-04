@@ -34,7 +34,7 @@ effectively always present where these skills run.
 
 | Event | When | How |
 | --- | --- | --- |
-| `skill_read` | A skill's `SKILL.md` is read | Plugin `Read` hook (Claude Code), scoped to this plugin |
+| `skill_invoked` | A skill is invoked (the `Skill` tool runs) | Plugin `Skill` hook (Claude Code), scoped to this plugin |
 | `skill_activated` | A skill is active and the agent makes its first tool call | Per-skill `PostToolUse` hook (Claude Code), deduped per session |
 | `skill_feedback` | You submit feedback | Manual — the command below |
 
@@ -69,7 +69,7 @@ keys, or tokens.
 
 ## Harness support
 
-- **Claude Code** — `skill_read` and `skill_activated` are automatic via hooks.
+- **Claude Code** — `skill_invoked` and `skill_activated` are automatic via hooks.
 - **Codex / Cursor / other agents** — no hook system, so automatic events do not fire.
   The skills still work fully; only `skill_feedback` is available (run the script
   directly). If a harness later exposes a per-tool hook adapter, the same scripts wire
@@ -116,7 +116,7 @@ those are secret and used only for reading/querying (e.g. the PostHog MCP).
 
 ## PostHog event shape
 
-- `event`: `skill_read` | `skill_activated` | `skill_feedback`
+- `event`: `skill_invoked` | `skill_activated` | `skill_feedback`
 - `distinct_id`: `expo-skills-installation:<installation_id_hash>`
 - `properties.source`: `expo-skills`
 - `properties.$process_person_profile`: `false`

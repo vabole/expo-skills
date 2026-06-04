@@ -2,11 +2,11 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Read",
+        "matcher": "Skill",
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh\" \"${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js\" --skill auto --event skill_read --quiet",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/run.sh\" \"${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-event.js\" --skill auto --event skill_invoked --quiet",
             "timeout": 5
           }
         ]

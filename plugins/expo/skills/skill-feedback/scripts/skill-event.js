@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Submit skill lifecycle telemetry (skill_read, skill_activated) to PostHog.
+// Submit skill lifecycle telemetry (skill_invoked, skill_activated) to PostHog.
 //
 // Runs from Claude Code hooks. Reads the hook payload from stdin (when present)
 // and never blocks: on any error it exits 0 under --quiet.
@@ -25,7 +25,7 @@ const {
   sendToPosthog,
 } = require("./telemetry_common.js");
 
-const EVENTS = ["skill_read", "skill_activated"];
+const EVENTS = ["skill_invoked", "skill_activated"];
 
 function parseArgs(argv) {
   const args = {
@@ -68,34 +68,30 @@ function readHookInput() {
   }
 }
 
-function hookFilePath(hookInput) {
+// Claude Code loads skills via the Skill tool (NOT the Read tool), and its input
+// carries the invoked skill name. Plugin skills may be namespaced (e.g.
+// "expo:expo-observe") — take the final segment as the folder name.
+function skillFromToolInput(hookInput) {
   const toolInput = hookInput.tool_input;
   if (!toolInput || typeof toolInput !== "object") return "";
-  return String(toolInput.file_path || toolInput.path || "").trim();
+  const raw = String(toolInput.skill || "").trim();
+  return raw.includes(":") ? raw.slice(raw.lastIndexOf(":") + 1) : raw;
 }
 
-function skillFromFilePath(filePath) {
-  if (!filePath) return "";
-  const parts = filePath.replace(/\\/g, "/").split("/").filter(Boolean);
-  if (parts[parts.length - 1] !== "SKILL.md") return "";
-  for (let i = 0; i < parts.length; i++) {
-    if (parts[i] !== "skills") continue;
-    if (i + 2 < parts.length && parts[i + 2] === "SKILL.md") return parts[i + 1];
-    if (i + 3 < parts.length && parts[i + 3] === "SKILL.md") return parts[i + 2];
+function pluginRootFor(args) {
+  // Self-derive from this script's location (<root>/skills/skill-feedback/scripts).
+  return args.pluginRoot || path.resolve(__dirname, "..", "..", "..");
+}
+
+// Only emit for skills that belong to THIS plugin, so we never track other
+// plugins' or the user's own skills. Confirms <pluginRoot>/skills/<skill>/SKILL.md exists.
+function skillBelongsToPlugin(skill, pluginRoot) {
+  if (!skill || !pluginRoot) return false;
+  try {
+    return fs.existsSync(path.join(pluginRoot, "skills", skill, "SKILL.md"));
+  } catch {
+    return false;
   }
-  return "";
-}
-
-// Only emit skill_read for files that live under this plugin, so we never
-// track SKILL.md reads from unrelated plugins or projects.
-function isUnderPluginRoot(filePath, pluginRoot) {
-  if (!pluginRoot) return true;
-  const resolve = (p) => {
-    try { return fs.realpathSync(path.resolve(p)); } catch { return path.resolve(p); }
-  };
-  const file = resolve(filePath);
-  const root = resolve(pluginRoot);
-  return file === root || file.startsWith(root + path.sep);
 }
 
 function resolveEvent(args) {
@@ -106,8 +102,8 @@ function resolveEvent(args) {
 function eventPayload(args, hookInput) {
   const eventName = resolveEvent(args);
   let skill = args.skill.trim();
-  if (eventName === "skill_read" && skill === "auto") {
-    skill = skillFromFilePath(hookFilePath(hookInput));
+  if (eventName === "skill_invoked" && skill === "auto") {
+    skill = skillFromToolInput(hookInput);
   }
 
   const agentHarness = args.agentHarness.trim() || detectHarness();
@@ -190,12 +186,11 @@ async function main(argv) {
   try {
     const eventName = resolveEvent(args);
 
-    if (eventName === "skill_read" && args.skill.trim() === "auto") {
-      const filePath = hookFilePath(hookInput);
-      if (!skillFromFilePath(filePath)) return 0;
-      // Default the plugin root to this script's location (<root>/skills/skill-feedback/scripts).
-      const pluginRoot = args.pluginRoot || path.resolve(__dirname, "..", "..", "..");
-      if (!isUnderPluginRoot(filePath, pluginRoot)) return 0;
+    if (eventName === "skill_invoked" && args.skill.trim() === "auto") {
+      const skill = skillFromToolInput(hookInput);
+      if (!skill) return 0;
+      // Only track this plugin's own skills.
+      if (!skillBelongsToPlugin(skill, pluginRootFor(args))) return 0;
     }
 
     if (eventName === "skill_activated" && !shouldSendActivation(args, hookInput, args.dryRun)) {
