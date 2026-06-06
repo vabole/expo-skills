@@ -57,9 +57,11 @@ function readHookInput() {
   }
 }
 
-// The invoked skill name comes straight from Claude Code's hook payload:
-//   - AI:   the Skill tool's `tool_input.skill`
-//   - user: UserPromptExpansion's `command_name` (slash command)
+// Resolve the invoked skill name from the hook payload. Per-harness shapes:
+//   - Claude Code Skill tool: tool_input.skill   (e.g. "expo:expo-observe")
+//   - Claude Code /slash:     command_name        (UserPromptExpansion)
+//   - Codex: add its skill-invocation field here once Codex ships a skill hook
+//     (openai/codex#21753). The rest of the pipeline is already harness-agnostic.
 // Plugin skills are namespaced (e.g. "expo:expo-observe") — keep the final segment.
 function skillFromHook(hookInput) {
   const toolInput = hookInput.tool_input;

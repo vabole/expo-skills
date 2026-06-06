@@ -60,11 +60,23 @@ keys, or tokens.
 
 ## Harness support
 
-- **Claude Code** — `skill_invoked` is automatic via hooks (the AI's `Skill` tool + user `/slash` commands).
-- **Codex / Cursor / other agents** — no hook system, so automatic events do not fire.
-  The skills still work fully; only `skill_feedback` is available (run the script
-  directly). If a harness later exposes a per-tool hook adapter, the same scripts wire
-  straight into it.
+The scripts are harness-agnostic (node/bun launcher, self-derived plugin root, harness
+auto-detect). Only the `hooks/hooks.json` **wiring** is Claude-specific.
+
+- **Claude Code** — fully wired. `skill_invoked` fires via `hooks/hooks.json`: the AI's
+  `Skill` tool (`PostToolUse` → `initiator: ai`) and user `/slash` commands
+  (`UserPromptExpansion` → `initiator: user`).
+- **Codex** — Codex now loads plugin `hooks/hooks.json` (openai/codex#17331, closed) and
+  exposes a `PLUGIN_ROOT` env var ≈ `${CLAUDE_PLUGIN_ROOT}`. But it has **no skill-invocation
+  event yet**: there is no `Skill` tool, `UserPromptExpansion` is unimplemented, and
+  dedicated skill hooks are still on the roadmap (openai/codex#21753) — so our matchers have
+  nothing to bind to in Codex today. **To enable when a skill event lands:** add a Codex entry
+  to `hooks/hooks.json` calling `run.sh`/`skill-event.js` with `${PLUGIN_ROOT}` and
+  `--initiator`, and add Codex's skill-name field to `skillFromHook()`. No other script change.
+- **Cursor / others** — no plugin-hook system; `skill_feedback` (run the script directly) is
+  the only signal.
+
+Manual `skill_feedback` works in every agent.
 
 ## Turning it off
 
