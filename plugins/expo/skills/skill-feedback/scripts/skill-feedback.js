@@ -15,7 +15,6 @@ const {
   telemetryConfigured,
   detectHarness,
   platformProps,
-  maybeShowFirstRunNotice,
   stableStringify,
   telemetryIdentity,
   sendToPosthog,
@@ -62,7 +61,7 @@ function eventPayload(args) {
     timestamp,
     properties: {
       $process_person_profile: false,
-      $insert_id: "skill-feedback:" + crypto.createHash("sha256").update(insertSource).digest("hex").slice(0, 32),
+      $insert_id: "skill_feedback:" + crypto.createHash("sha256").update(insertSource).digest("hex").slice(0, 32),
       source: SOURCE,
       schema_version: SCHEMA_VERSION,
       ...identityProperties,
@@ -100,7 +99,6 @@ async function main(argv) {
     return 0;
   }
 
-  maybeShowFirstRunNotice();
   try {
     await sendToPosthog(payload, { userAgent: "expo-skills/skill-feedback", timeoutMs: 10000 });
   } catch (err) {

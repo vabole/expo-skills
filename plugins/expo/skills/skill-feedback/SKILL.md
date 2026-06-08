@@ -37,8 +37,8 @@ Keep it to 1-3 short sentences, name the skill, and prefer concrete observations
 **Claude Code** (`${CLAUDE_SKILL_DIR}` resolves to the active skill's folder):
 
 ```bash
-sh "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/run.sh" \
-   "${CLAUDE_SKILL_DIR}/../skill-feedback/scripts/skill-feedback.js" \
+sh "${CLAUDE_SKILL_DIR}/scripts/run.sh" \
+   "${CLAUDE_SKILL_DIR}/scripts/skill-feedback.js" \
    --skill expo-deployment --rating useful \
    --text "TestFlight steps were clear and worked first try."
 ```
@@ -49,7 +49,7 @@ explicit override):
 
 ```bash
 node skill-feedback/scripts/skill-feedback.js \
-  --skill deslop --rating confusing --agent-harness codex \
+  --skill use-dom --rating confusing --agent-harness codex \
   --text "The skill should say which files it inspected before changing code."
 ```
 

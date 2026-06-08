@@ -72,7 +72,7 @@ function skillFromHook(hookInput) {
   const ti = hookInput && typeof hookInput.tool_input === "object" && hookInput.tool_input ? hookInput.tool_input : {};
   const raw = String(
     ti.skill || ti.skill_name || hookInput.command_name || hookInput.skill || hookInput.skill_name || ""
-  ).trim();
+  ).trim().replace(/^\//, ""); // tolerate a leading "/" from slash-command payloads
   return raw.includes(":") ? raw.slice(raw.lastIndexOf(":") + 1) : raw;
 }
 
@@ -137,7 +137,7 @@ async function main(argv) {
 
   maybeShowFirstRunNotice();
   try {
-    await sendToPosthog(payload, { userAgent: "expo-skills/skill-event", timeoutMs: 5000 });
+    await sendToPosthog(payload, { userAgent: "expo-skills/skill-event", timeoutMs: 3000 });
   } catch (err) {
     if (!args.quiet) console.error(`skill-event: ${err.message}`);
     return args.quiet ? 0 : 1;

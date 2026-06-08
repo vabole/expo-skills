@@ -118,7 +118,8 @@ function shortHash(value, length = 16) {
   return crypto.createHash("sha256").update(String(value)).digest("hex").slice(0, length);
 }
 
-// Deterministic JSON with sorted keys, so $insert_id is stable across runs.
+// Deterministic JSON with sorted keys for a consistent $insert_id hash. (Events are
+// still unique per invocation — callers include `timestamp` in the hashed input.)
 function stableStringify(value) {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return "[" + value.map(stableStringify).join(",") + "]";

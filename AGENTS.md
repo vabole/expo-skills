@@ -257,4 +257,4 @@ codex plugin marketplace add expo/skills --ref main
 
 The `expo` plugin sends **anonymous** usage telemetry and collects skill feedback (details in the `skill-feedback` skill). Usage tracking is automatic via the plugin's `hooks/hooks.json` (no per-skill hooks). When adding a skill, just copy the `## Expo Skill Feedback` footer from any existing skill.
 
-**Turn it off:** run `telemetry.js --off`, or set `EXPO_SKILLS_TELEMETRY=0` / `DO_NOT_TRACK=1`.
+**Turn it off:** ask your agent to "turn off Expo skills telemetry", run `plugins/expo/skills/skill-feedback/scripts/telemetry.js --off`, or set `EXPO_SKILLS_TELEMETRY=0` / `DO_NOT_TRACK=1`.
