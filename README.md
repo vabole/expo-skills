@@ -1,18 +1,22 @@
-<div align="center">
+<p align="center">
   <a href="https://docs.expo.dev/skills/" target="_blank">
     <img src="assets/expo-skills.png" alt="Expo Skills" width="100%" />
   </a>
-</div>
+</p>
 
-# Expo Skills
+<h3 align="center">Expo Skills</h3>
 
-Official AI agent skills from the Expo team for building, deploying, upgrading, and debugging Expo apps.
-
-<p>
+<p align="center">
   <a href="https://skills.sh/expo/skills"><img src="https://skills.sh/b/expo/skills" alt="skills.sh installs" /></a>
   <img src="https://img.shields.io/badge/Expo-official-000020" alt="Official Expo" />
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" />
 </p>
+
+<p align="center">
+  Official AI agent skills from the Expo team for building, deploying, upgrading, and debugging Expo apps.
+</p>
+
+## How It Works
 
 Skills give AI agents focused Expo knowledge: when to use Expo APIs, how to structure common workflows, and which Expo, EAS, React Native, iOS, and Android constraints matter. Expo documentation, Expo CLI, and EAS CLI remain the source of truth; these skills help agents apply them correctly.
 
