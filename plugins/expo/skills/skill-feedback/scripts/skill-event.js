@@ -28,7 +28,7 @@ const {
 const EVENT = "skill_invoked";
 
 function parseArgs(argv) {
-  const args = { skill: "", agentHarness: "", initiator: "", pluginRoot: "", dryRun: false, quiet: false };
+  const args = { skill: "", agentHarness: "", initiator: "", pluginRoot: "", hookInputFile: "", dryRun: false, quiet: false };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     const next = () => argv[++i] || "";
@@ -37,6 +37,7 @@ function parseArgs(argv) {
       case "--agent-harness": args.agentHarness = next(); break;
       case "--initiator": args.initiator = next(); break;
       case "--plugin-root": args.pluginRoot = next(); break;
+      case "--hook-input-file": args.hookInputFile = next(); break;
       case "--dry-run": args.dryRun = true; break;
       case "--quiet": args.quiet = true; break;
       default: break; // ignore unknown flags
@@ -45,10 +46,21 @@ function parseArgs(argv) {
   return args;
 }
 
-function readHookInput() {
+// Read the hook payload. The detaching wrapper (skill-event.sh) stashes stdin in a temp
+// file and passes --hook-input-file, because a backgrounded process's stdin is /dev/null
+// (POSIX), so the detached send can't read the pipe directly. We read that file then
+// unlink it. With no file (foreground / direct invocation), fall back to stdin (fd 0).
+function readHookInput(file) {
   try {
-    if (process.stdin.isTTY) return {};
-    const raw = fs.readFileSync(0, "utf8").trim(); // fd 0 = stdin
+    let raw;
+    if (file) {
+      raw = fs.readFileSync(file, "utf8");
+      try { fs.unlinkSync(file); } catch {}
+    } else {
+      if (process.stdin.isTTY) return {};
+      raw = fs.readFileSync(0, "utf8"); // fd 0 = stdin
+    }
+    raw = (raw || "").trim();
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
@@ -63,10 +75,9 @@ function readHookInput() {
 // (anything that isn't really one of our skills is dropped):
 //   - Claude Code Skill tool:        tool_input.skill        (e.g. "expo:expo-observe")
 //   - Claude Code /slash command:    command_name            (UserPromptExpansion)
-//   - Codex / future skill hooks:    tool_input.skill_name, top-level skill / skill_name
-// Codex mirrors Claude's hook event names (parity tracker openai/codex#21753) and aliases
-// CLAUDE_PLUGIN_ROOT, so the existing hooks fire there unchanged once Codex enables plugin
-// hooks — this resolver just has to tolerate whatever field the payload uses for the name.
+//   - other payload shapes:          tool_input.skill_name, top-level skill / skill_name
+// We check every plausible field so the resolver stays robust across payload shapes; the
+// strict skillBelongsToPlugin() scoping below keeps it safe even when permissive.
 // Plugin skills are namespaced (e.g. "expo:expo-observe") — keep the final segment.
 function skillFromHook(hookInput) {
   const ti = hookInput && typeof hookInput.tool_input === "object" && hookInput.tool_input ? hookInput.tool_input : {};
@@ -83,8 +94,11 @@ function pluginRootFor(args) {
 
 // Only emit for skills that belong to THIS plugin (so we never track other plugins'
 // or the user's own skills). Confirms <pluginRoot>/skills/<skill>/SKILL.md exists.
+// The skill name must be a single kebab-case segment — this also blocks path traversal
+// (e.g. "../../x") from a malformed payload reaching path.join or the event property.
 function skillBelongsToPlugin(skill, pluginRoot) {
   if (!skill || !pluginRoot) return false;
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(skill)) return false;
   try { return fs.existsSync(path.join(pluginRoot, "skills", skill, "SKILL.md")); }
   catch { return false; }
 }
@@ -119,9 +133,12 @@ function eventPayload(skill, args, hookInput) {
 
 async function main(argv) {
   const args = parseArgs(argv);
+  // Read (and unlink) the hook payload FIRST so the temp file from skill-event.sh is
+  // cleaned up on every path below, including the telemetry-off early returns. (It can
+  // still be orphaned if no JS runtime starts at all; those are mode 0600 and OS-reaped.)
+  const hookInput = readHookInput(args.hookInputFile);
   if (telemetryDisabled()) return 0;
-  if (!telemetryConfigured() && !args.dryRun) return 0; // no key set -> fully inert
-  const hookInput = readHookInput();
+  if (!telemetryConfigured() && !args.dryRun) return 0; // no key in this build (e.g. a fork) -> stay inert
 
   let skill = args.skill.trim();
   if (skill === "auto") skill = skillFromHook(hookInput);
@@ -135,7 +152,10 @@ async function main(argv) {
     return 0;
   }
 
-  maybeShowFirstRunNotice();
+  // Only show the one-time notice on a visible (non-quiet) invocation. The quiet hook path
+  // runs detached with stderr -> /dev/null, so printing there would burn the once-per-machine
+  // marker without the user ever seeing it. On-by-default is disclosed in the README + skill.
+  if (!args.quiet) maybeShowFirstRunNotice();
   try {
     await sendToPosthog(payload, { userAgent: "expo-skills/skill-event", timeoutMs: 3000 });
   } catch (err) {

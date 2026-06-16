@@ -33,7 +33,7 @@ function printStatus() {
     if (byEnv) reasons.push(`env var ${byEnv}`);
     console.log(`Expo skills telemetry: DISABLED — via ${reasons.join(" and ")}.`);
   } else if (!telemetryConfigured()) {
-    console.log("Expo skills telemetry: ENABLED but NOT CONFIGURED — no PostHog key set (placeholder), so nothing is created or sent. Disable permanently with: telemetry.js --off");
+    console.log("Expo skills telemetry: ENABLED, but no PostHog key in this build (key stripped to placeholder) — nothing is created or sent. Disable permanently with: telemetry.js --off");
   } else {
     console.log("Expo skills telemetry: ENABLED (anonymous). Disable with: telemetry.js --off");
   }

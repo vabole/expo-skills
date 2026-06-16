@@ -82,7 +82,7 @@ async function main(argv) {
     return 0;
   }
   if (!telemetryConfigured() && !args.dryRun) {
-    console.error("skill-feedback: no PostHog key configured (placeholder); nothing sent. Set EXPO_SKILLS_POSTHOG_KEY or the key in telemetry_common.js.");
+    console.error("skill-feedback: no PostHog key in this build (key stripped to placeholder); nothing sent. Set EXPO_SKILLS_POSTHOG_KEY or restore the key in telemetry_common.js.");
     return 0;
   }
 

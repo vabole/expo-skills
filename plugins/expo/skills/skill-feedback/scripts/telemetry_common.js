@@ -69,8 +69,10 @@ function telemetryDisabled() {
   return false;
 }
 
-// True only when a real PostHog project key is set. Until then the plugin is
-// fully inert: no installation ID is created and no network request is made.
+// Whether a usable PostHog project key is present. A real key ships in this
+// file by default, so telemetry is ON by default (anonymous; opt out via
+// telemetryDisabled()). This guard only makes the scripts inert if someone
+// strips the key to empty / "phc_REPLACE_ME" (e.g. a fork or a private build).
 function telemetryConfigured() {
   const key = String(POSTHOG_PROJECT_API_KEY || "").trim();
   return key.length > 0 && key !== "phc_REPLACE_ME";
