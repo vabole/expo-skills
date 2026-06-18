@@ -1,10 +1,15 @@
 #!/usr/bin/env node
-// Submit a `skill_invoked` event to PostHog.
+// Submit a `skill_invoked` event to PostHog — fire-and-forget.
 //
-// Fires from two Claude Code hooks (see ../../../hooks/hooks.json):
-//   - PostToolUse[Skill]   -> the AI invoked a skill        (--initiator ai)
-//   - UserPromptExpansion  -> a user ran a /slash command   (--initiator user)
-// Reads the hook payload from stdin; never blocks (exits 0 under --quiet).
+// Invoked two ways, both cross-platform (plain `node`, no shell wrapper, so it runs the
+// same on macOS / Linux / Windows):
+//   1. From Claude Code hooks (../../../hooks/hooks.json) as
+//      `node skill-event.cjs --skill auto --initiator <ai|user> --plugin-root <dir> --detach --quiet`.
+//      The foreground process reads the hook payload from stdin, resolves which skill ran,
+//      runs the cheap local gates, then — for `--detach` — re-launches a DETACHED copy of
+//      itself to do the network POST and returns immediately, so the agent turn never blocks.
+//   2. Directly (that detached child, or manual / --dry-run testing) with a resolved
+//      `--skill <name>`, which builds the event and sends it inline.
 
 const fs = require("fs");
 const path = require("path");
@@ -23,7 +28,7 @@ const {
 const EVENT = "skill_invoked";
 
 function parseArgs(argv) {
-  const args = { skill: "", agentHarness: "", initiator: "", pluginRoot: "", hookInputFile: "", dryRun: false, quiet: false };
+  const args = { skill: "", agentHarness: "", initiator: "", pluginRoot: "", dryRun: false, quiet: false, detach: false };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     const next = () => argv[++i] || "";
@@ -32,7 +37,7 @@ function parseArgs(argv) {
       case "--agent-harness": args.agentHarness = next(); break;
       case "--initiator": args.initiator = next(); break;
       case "--plugin-root": args.pluginRoot = next(); break;
-      case "--hook-input-file": args.hookInputFile = next(); break;
+      case "--detach": args.detach = true; break;
       case "--dry-run": args.dryRun = true; break;
       case "--quiet": args.quiet = true; break;
       default: break; // ignore unknown flags
@@ -41,21 +46,13 @@ function parseArgs(argv) {
   return args;
 }
 
-// Read the hook payload. The detaching wrapper (skill-event.sh) stashes stdin in a temp
-// file and passes --hook-input-file, because a backgrounded process's stdin is /dev/null
-// (POSIX), so the detached send can't read the pipe directly. We read that file then
-// unlink it. With no file (foreground / direct invocation), fall back to stdin (fd 0).
-function readHookInput(file) {
+// Read the hook payload from stdin (fd 0) and parse it as JSON. Only used to resolve
+// `--skill auto` in the foreground hook process; the detached sender is handed the
+// already-resolved name and never touches stdin.
+function readHookInput() {
   try {
-    let raw;
-    if (file) {
-      raw = fs.readFileSync(file, "utf8");
-      try { fs.unlinkSync(file); } catch {}
-    } else {
-      if (process.stdin.isTTY) return {};
-      raw = fs.readFileSync(0, "utf8"); // fd 0 = stdin
-    }
-    raw = (raw || "").trim();
+    if (process.stdin.isTTY) return {};
+    const raw = (fs.readFileSync(0, "utf8") || "").trim(); // fd 0 = stdin
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
@@ -71,8 +68,6 @@ function readHookInput(file) {
 //   - Claude Code Skill tool:        tool_input.skill        (e.g. "expo:expo-observe")
 //   - Claude Code /slash command:    command_name            (UserPromptExpansion)
 //   - other payload shapes:          tool_input.skill_name, top-level skill / skill_name
-// We check every plausible field so the resolver stays robust across payload shapes; the
-// strict skillBelongsToPlugin() scoping below keeps it safe even when permissive.
 // Plugin skills are namespaced (e.g. "expo:expo-observe") — keep the final segment.
 function skillFromHook(hookInput) {
   const ti = hookInput && typeof hookInput.tool_input === "object" && hookInput.tool_input ? hookInput.tool_input : {};
@@ -83,7 +78,7 @@ function skillFromHook(hookInput) {
 }
 
 function pluginRootFor(args) {
-  // Self-derive from this script's location: <root>/skills/skill-feedback/scripts.
+  // Self-derive from this script's location: <root>/skills/expo-skill-feedback/scripts.
   return args.pluginRoot || path.resolve(__dirname, "..", "..", "..");
 }
 
@@ -117,19 +112,47 @@ function eventPayload(skill, args) {
   return { api_key: POSTHOG_PROJECT_API_KEY, event: EVENT, distinct_id: distinctId, timestamp, properties };
 }
 
+// Re-launch this script DETACHED to perform the network POST off the agent's critical
+// path — the cross-platform equivalent of `node skill-event.cjs … &`. We pass the already
+// resolved `--skill <name>` (not "auto") and drop `--detach`, so the child sends inline and
+// never reads stdin or re-detaches. It runs under the same runtime that launched us
+// (process.execPath = node or bun) and inherits our env (CLAUDECODE, EXPO_SKILLS_*, …).
+// windowsHide avoids a console-window flash on Windows; failures are ignored (best-effort).
+function spawnDetachedSend(skill, args) {
+  try {
+    const { spawn } = require("child_process");
+    const childArgs = [__filename, "--skill", skill, "--quiet"];
+    if (args.initiator.trim()) childArgs.push("--initiator", args.initiator.trim());
+    if (args.agentHarness.trim()) childArgs.push("--agent-harness", args.agentHarness.trim());
+    const child = spawn(process.execPath, childArgs, { detached: true, stdio: "ignore", windowsHide: true });
+    child.unref();
+  } catch {
+    // best-effort: if the child can't be spawned, skip the send rather than block
+  }
+}
+
 async function main(argv) {
   const args = parseArgs(argv);
-  // Read (and unlink) the hook payload FIRST so the temp file from skill-event.sh is
-  // cleaned up on every path below, including the telemetry-off early returns. (It can
-  // still be orphaned if no JS runtime starts at all; those are mode 0600 and OS-reaped.)
-  const hookInput = readHookInput(args.hookInputFile);
-  if (telemetryDisabled()) return 0;
-  if (!telemetryConfigured() && !args.dryRun) return 0; // no key in this build (e.g. a fork) -> stay inert
 
+  // Resolve which skill ran. `--skill auto` means "read it from the hook payload on
+  // stdin" — which must happen HERE, in the foreground hook process, because a detached
+  // child's stdin is /dev/null.
   let skill = args.skill.trim();
-  if (skill === "auto") skill = skillFromHook(hookInput);
-  if (!skill) return 0;                                   // not a skill invocation
+  if (skill === "auto") skill = skillFromHook(readHookInput());
+
+  // Cheap, local, no-network gates: decide up front whether anything will be sent, so the
+  // common "not an Expo skill / opted out" cases cost nothing and never spawn a child.
+  if (!skill) return 0;                                            // not a skill invocation
+  if (telemetryDisabled()) return 0;
+  if (!telemetryConfigured() && !args.dryRun) return 0;            // no key in this build (e.g. a fork) -> inert
   if (!skillBelongsToPlugin(skill, pluginRootFor(args))) return 0; // not one of ours
+
+  // Hook path: hand the network POST to a detached copy of ourselves so the turn never
+  // blocks on it, then return immediately. (--dry-run stays inline so it can be inspected.)
+  if (args.detach && !args.dryRun) {
+    spawnDetachedSend(skill, args);
+    return 0;
+  }
 
   const payload = eventPayload(skill, args);
 

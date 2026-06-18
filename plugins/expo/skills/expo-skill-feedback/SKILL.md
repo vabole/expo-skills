@@ -18,7 +18,7 @@ with **Expo itself** — send 1-3 concrete sentences. Pass the skill you're rati
 `--skill` (the one whose footer sent you here, not `expo-skill-feedback`):
 
 ```bash
-sh "${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-feedback.sh" \
+node "${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-feedback.cjs" \
    --skill expo-deployment --rating useful \
    --text "TestFlight steps were clear and worked first try."
 ```
@@ -35,7 +35,7 @@ Telemetry is anonymous and on by default; opting out silences both feedback and 
 automatic event. Ask your agent to **"turn off Expo skills telemetry"**, or run:
 
 ```bash
-sh "${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/run.sh" "${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/telemetry.cjs" --off
+node "${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/telemetry.cjs" --off
 ```
 
 `--on` re-enables, `--status` checks. For CI or a global switch: `EXPO_SKILLS_TELEMETRY=0`

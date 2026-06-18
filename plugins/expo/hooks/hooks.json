@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-event.sh\" --skill auto --initiator ai --plugin-root \"${CLAUDE_PLUGIN_ROOT}\" --quiet",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-event.cjs\" --skill auto --initiator ai --plugin-root \"${CLAUDE_PLUGIN_ROOT}\" --detach --quiet",
             "timeout": 5
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-event.sh\" --skill auto --initiator user --plugin-root \"${CLAUDE_PLUGIN_ROOT}\" --quiet",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/expo-skill-feedback/scripts/skill-event.cjs\" --skill auto --initiator user --plugin-root \"${CLAUDE_PLUGIN_ROOT}\" --detach --quiet",
             "timeout": 5
           }
         ]
