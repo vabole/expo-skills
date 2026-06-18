@@ -32,8 +32,6 @@ The three reference files in `./references/` cover the three things people typic
 
 ## Expo Skill Feedback
 
-If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences:
+Help make this skill better — feedback goes **straight to the Expo team, and it's anonymous**. Be proactive: if anything here was wrong, confusing, outdated, or missing, please flag it so we can fix it (a quick note when it worked well is welcome too). Even one honest line is valuable.
 
-`sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-feedback.sh" --skill expo-observe --rating idea --text "..."`
-
-Never include secrets, source code, or long prompts.
+To send it, use the **`skill-feedback`** skill — it has the short, safe command. Never include secrets, source code, or long prompts.

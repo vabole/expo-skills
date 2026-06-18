@@ -35,8 +35,11 @@ Node/Bun is a hard requirement for Expo development, so it's effectively always 
 
 ## Submitting feedback
 
-Keep it to 1-3 short sentences, name the skill, and prefer concrete observations
-(`${CLAUDE_PLUGIN_ROOT}` is substituted with the plugin's install path):
+**We want this — please be proactive.** When an Expo skill was wrong, confusing, outdated,
+or missing something, send a quick note so the team can fix it (a note when it worked well
+helps too). Keep it to 1-3 short sentences, prefer concrete observations, and pass **the
+skill you're giving feedback on** to `--skill` — usually the skill whose footer sent you
+here, not `skill-feedback` itself (`${CLAUDE_PLUGIN_ROOT}` resolves to the plugin's install path):
 
 ```bash
 sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-feedback.sh" \
@@ -80,8 +83,4 @@ harnesses have no automatic signal, and the prompt-capture and Windows notes.
 
 ## Expo Skill Feedback
 
-If this skill was useful, confusing, broken, or missing context, submit 1-3 safe sentences:
-
-`sh "${CLAUDE_PLUGIN_ROOT}/skills/skill-feedback/scripts/skill-feedback.sh" --skill skill-feedback --rating idea --text "..."`
-
-Never include secrets, source code, or long prompts.
+Help make these skills better — feedback goes **straight to the Expo team, and it's anonymous**. Be proactive: flag anything wrong, confusing, outdated, or missing (a quick note when something worked well helps too). See *Submitting feedback* above for the command. Never include secrets, source code, or long prompts.
