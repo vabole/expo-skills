@@ -12,7 +12,7 @@ changing the telemetry.
 - `properties.skill`: skill folder name (e.g. `expo-deployment`)
 - `properties.agent_harness`: `claude-code` (auto-detected), else `unknown`; `--agent-harness` overrides
 - `properties.os` / `arch`: platform (e.g. `macos` / `arm64`), non-PII
-- `properties.installation_id_hash` / `session_id_hash`: short hashes only — raw values never sent
+- `properties.installation_id_hash`: anonymous hash of the local random install id (the raw id never leaves the machine)
 - `skill_invoked` adds `properties.initiator`: `ai` (Skill tool) | `user` (`/slash`)
 - `skill_feedback` adds `properties.rating`, `properties.feedback_text`, and `properties.about`: `skill` (default) | `expo` (the trouble is Expo itself, not the skill)
 
@@ -37,14 +37,5 @@ there's no skill event in `HookEventName`; **Cursor** has no plugin hooks. If Op
 `plugin_hooks` *and* adds a skill event, wiring is small — Codex already aliases
 `${CLAUDE_PLUGIN_ROOT}`.
 
-## Implementation notes
-
-The how lives in the scripts' own comments — read those before changing them.
-
-- **Off the critical path** — the hook runs `skill-event.sh`, which detaches the POST into a
-  new session (`setsid`→`perl`→`nohup`) and returns in ~20ms; the payload reaches the
-  detached `skill-event.js` via a temp file + `--hook-input-file` (a backgrounded process's
-  stdin is `/dev/null`). `skill-feedback.sh` stays foreground — it reports success to the user.
-- **Windows** — `sh` is absent on a bare Windows shell, so the hook no-ops (fail-open) and
-  Windows usage is under-counted. A Node-level detach (`spawn(…, {detached:true}).unref()`)
-  would drop the `sh` dependency.
+The *how* (detach, temp-file payload handoff, Windows fail-open) lives in the scripts' own
+comments — read those before changing them.

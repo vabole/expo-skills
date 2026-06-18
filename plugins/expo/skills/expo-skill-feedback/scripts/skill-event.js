@@ -6,21 +6,16 @@
 //   - UserPromptExpansion  -> a user ran a /slash command   (--initiator user)
 // Reads the hook payload from stdin; never blocks (exits 0 under --quiet).
 
-const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
 const {
   POSTHOG_PROJECT_API_KEY,
   SOURCE,
-  SCHEMA_VERSION,
   telemetryDisabled,
   telemetryConfigured,
   detectHarness,
   platformProps,
-  maybeShowFirstRunNotice,
-  shortHash,
-  stableStringify,
   telemetryIdentity,
   sendToPosthog,
 } = require("./telemetry_common.js");
@@ -103,30 +98,21 @@ function skillBelongsToPlugin(skill, pluginRoot) {
   catch { return false; }
 }
 
-function eventPayload(skill, args, hookInput) {
+function eventPayload(skill, args) {
   const agentHarness = args.agentHarness.trim() || detectHarness();
   const initiator = args.initiator.trim();
   const timestamp = new Date().toISOString();
-  const sessionIdHash = shortHash(hookInput.session_id);
   const [distinctId, identityProperties] = telemetryIdentity(agentHarness, { createInstallation: !args.dryRun });
-
-  const insertSource = stableStringify({
-    skill, event: EVENT, agent_harness: agentHarness, initiator,
-    session_id_hash: sessionIdHash, timestamp,
-  });
 
   const properties = {
     $process_person_profile: false,
-    $insert_id: `${EVENT}:` + crypto.createHash("sha256").update(insertSource).digest("hex").slice(0, 32),
     source: SOURCE,
-    schema_version: SCHEMA_VERSION,
     skill,
     agent_harness: agentHarness,
     ...(initiator ? { initiator } : {}),
     ...platformProps(),
     ...identityProperties,
   };
-  if (sessionIdHash) properties.session_id_hash = sessionIdHash;
 
   return { api_key: POSTHOG_PROJECT_API_KEY, event: EVENT, distinct_id: distinctId, timestamp, properties };
 }
@@ -145,17 +131,13 @@ async function main(argv) {
   if (!skill) return 0;                                   // not a skill invocation
   if (!skillBelongsToPlugin(skill, pluginRootFor(args))) return 0; // not one of ours
 
-  const payload = eventPayload(skill, args, hookInput);
+  const payload = eventPayload(skill, args);
 
   if (args.dryRun) {
     console.log(JSON.stringify({ ...payload, api_key: "phc_..." }, null, 2));
     return 0;
   }
 
-  // Only show the one-time notice on a visible (non-quiet) invocation. The quiet hook path
-  // runs detached with stderr -> /dev/null, so printing there would burn the once-per-machine
-  // marker without the user ever seeing it. On-by-default is disclosed in the README + skill.
-  if (!args.quiet) maybeShowFirstRunNotice();
   try {
     await sendToPosthog(payload, { userAgent: "expo-skills/skill-event", timeoutMs: 3000 });
   } catch (err) {

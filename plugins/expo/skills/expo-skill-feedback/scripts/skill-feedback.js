@@ -5,17 +5,13 @@
 //   node skill-feedback.js --skill <name> --rating <rating> --text "..." \
 //     [--about skill|expo] [--agent-harness <harness>] [--dry-run]
 
-const crypto = require("crypto");
-
 const {
   POSTHOG_PROJECT_API_KEY,
   SOURCE,
-  SCHEMA_VERSION,
   telemetryDisabled,
   telemetryConfigured,
   detectHarness,
   platformProps,
-  stableStringify,
   telemetryIdentity,
   sendToPosthog,
 } = require("./telemetry_common.js");
@@ -58,7 +54,6 @@ function eventPayload(args) {
 
   const timestamp = new Date().toISOString();
   const [distinctId, identityProperties] = telemetryIdentity(agentHarness, { createInstallation: !args.dryRun });
-  const insertSource = stableStringify({ agent_harness: agentHarness, skill, about, rating: args.rating, feedback, timestamp });
 
   return {
     api_key: POSTHOG_PROJECT_API_KEY,
@@ -67,9 +62,7 @@ function eventPayload(args) {
     timestamp,
     properties: {
       $process_person_profile: false,
-      $insert_id: "skill_feedback:" + crypto.createHash("sha256").update(insertSource).digest("hex").slice(0, 32),
       source: SOURCE,
-      schema_version: SCHEMA_VERSION,
       ...identityProperties,
       agent_harness: agentHarness,
       ...platformProps(),
