@@ -11,6 +11,7 @@
         "expo-data-fetching",
         "expo-tailwind-setup",
         "expo-dom",
+        "expo-web-to-native",
         "expo-module",
         "expo-brownfield",
         "expo-dev-client",
@@ -27,7 +28,8 @@
         "eas-hosting",
         "eas-workflows",
         "eas-observe",
-        "eas-update-insights"
+        "eas-update-insights",
+        "eas-simulator"
       ]
     }
   ]

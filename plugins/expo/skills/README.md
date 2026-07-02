@@ -13,6 +13,7 @@ Free, open-source Expo SDK and React Native skills. Descriptions are prefixed `F
 | `expo-data-fetching` | API calls, React Query, SWR, caching, offline support, and Expo Router data loaders. |
 | `expo-tailwind-setup` | Tailwind CSS v4, `react-native-css`, and NativeWind v5 setup. |
 | `expo-dom` | Expo DOM components for gradually using web code in native apps. |
+| `expo-web-to-native` | Migrating an existing web/React app (Next.js, Vite, CRA) to a native iOS/Android app with Expo. |
 | `expo-module` | Expo native modules and views with Swift, Kotlin, TypeScript, config plugins, and autolinking. |
 | `expo-brownfield` | Adding Expo or React Native to an existing iOS or Android app. |
 | `expo-dev-client` | Development clients (local builds are free; EAS Build/TestFlight is a paid step). |
@@ -31,6 +32,7 @@ Skills whose core purpose uses paid Expo Application Services (EAS). Description
 | `eas-workflows` | EAS Workflow YAML files and CI/CD automation. | EAS build/compute minutes |
 | `eas-observe` | EAS Observe setup and launch, route, event, and version metrics. | EAS Observe usage |
 | `eas-update-insights` | EAS Update health, crash rates, launch counts, payload size, and rollout gates. | EAS Update usage |
+| `eas-simulator` | Remote iOS/Android simulators on EAS cloud, driven from the CLI or an agent, with browser preview. | EAS Simulator usage |
 
 ## Adding a skill
 

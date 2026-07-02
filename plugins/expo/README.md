@@ -38,6 +38,7 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - Adding navigation, styling, or animations
 - Wiring up data fetching
 - Integrating web libraries via DOM components
+- Migrating an existing web/React app to native with Expo
 - Configuring Tailwind CSS for React Native
 - Writing Expo native modules or integrating Expo into an existing native app
 - Adapting a third-party integration from `expo/examples`
@@ -65,6 +66,7 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - **expo-data-fetching** — Network requests, API calls, caching, and offline support
 - **expo-tailwind-setup** — Set up Tailwind CSS v4 in Expo with NativeWind v5
 - **expo-dom** — Run web code in a webview on native using DOM components
+- **expo-web-to-native** — Migrate an existing web/React app to a native iOS/Android app with Expo
 - **expo-module** — Write Expo native modules and views (Swift, Kotlin, TypeScript, config plugins)
 - **expo-brownfield** — Integrate Expo and React Native into existing native iOS or Android apps
 - **expo-dev-client** — Build and distribute Expo development clients (local builds free; EAS Build/TestFlight paid)
@@ -79,6 +81,7 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - **eas-workflows** — EAS workflow YAML files for CI/CD pipelines
 - **eas-observe** — EAS Observe setup and launch, route, event, and version metrics
 - **eas-update-insights** — Check EAS Update health, crash rates, adoption, and payload size
+- **eas-simulator** — Run and drive your app on a remote iOS/Android simulator on EAS cloud, from the CLI or an AI agent
 
 ## License
 
