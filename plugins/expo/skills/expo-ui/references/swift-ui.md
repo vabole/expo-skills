@@ -42,9 +42,9 @@ Or more simply, put the `Platform.OS` guard and the SwiftUI import in the same r
   node <skill-root>/scripts/list-components.js <project-path> --docs   # with one-line descriptions
   ```
   (`<skill-root>` is the directory containing this `references/` folder.)
-- **The installed package's TypeScript types (`.d.ts`) are the most reliable source of truth** for prop shapes and signatures - read the relevant `{Component}/index.d.ts` from the installed `@expo/ui/swift-ui` package in `node_modules`. Use the docs below as the human-readable reference.
-- When about to use a component, fetch its docs to confirm the API - https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/{component-name}/index.md
-- When unsure about a modifier's API, refer to the docs - https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/modifiers/index.md
+- **The installed package's TypeScript types (`.d.ts`) are the most reliable source of truth** for prop shapes and signatures — read the relevant `{Component}/index.d.ts` from the installed `@expo/ui/swift-ui` package in `node_modules`. Use the docs below as the human-readable reference.
+- When about to use a component, fetch its docs to confirm the API — https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/{component-name}/index.md
+- When unsure about a modifier's API, refer to the docs — https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/modifiers/index.md
 - Every SwiftUI tree must be wrapped in `Host`.
 - `RNHostView` is specifically for embedding RN components inside a SwiftUI tree. Example:
 
@@ -67,7 +67,7 @@ import { Pressable } from "react-native";
 
 ## useNativeState
 
-`useNativeState` creates observable state that updates synchronously on the UI thread via worklets, enabling immediate native state changes without waiting for a React render cycle. Requires `react-native-worklets` - without it updates still go through React and flickering remains. Best for real-time interactions where synchronous updates matter, e.g. a text field that masks or formats input as the user types.
+`useNativeState` creates observable state that updates synchronously on the UI thread via worklets, enabling immediate native state changes without waiting for a React render cycle. Requires `react-native-worklets` — without it updates still go through React and flickering remains. Best for real-time interactions where synchronous updates matter, e.g. a text field that masks or formats input as the user types.
 
 - `ObservableState.value` is readable/writable from worklets; `onChange` fires a worklet listener on state change.
-- Docs - https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/usenativestate/index.md
+- Docs — https://docs.expo.dev/versions/latest/sdk/ui/swift-ui/usenativestate/index.md

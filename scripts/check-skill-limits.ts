@@ -74,8 +74,9 @@ for (const path of skills) {
   if (!description.startsWith(expectedPrefix))
     errors.push(`${rel}: description must start with "${expectedPrefix}"`);
 
-  // paid skills disclose costs up front
-  if (isPaid && (!body.includes(PAID_CALLOUT) || !body.includes(PAID_PRICING_LINK)))
+  // paid skills disclose costs up front (dash style varies: em dash or hyphen)
+  const normalizedBody = body.replace(/—/g, "-");
+  if (isPaid && (!normalizedBody.includes(PAID_CALLOUT) || !normalizedBody.includes(PAID_PRICING_LINK)))
     errors.push(`${rel}: paid skill body must include the "${PAID_CALLOUT}" callout with a ${PAID_PRICING_LINK} link`);
 
   // Codex trigger metadata

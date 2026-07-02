@@ -2,8 +2,8 @@
 
 Use this reference to choose between the two ways of adding React Native + Expo to an existing native app. If the team and constraints are already known, jump to one of:
 
-- [./brownfield-isolated.md](./brownfield-isolated.md) - RN as a prebuilt AAR / XCFramework.
-- [./brownfield-integrated.md](./brownfield-integrated.md) - RN added directly to existing Gradle / CocoaPods.
+- [./brownfield-isolated.md](./brownfield-isolated.md) — RN as a prebuilt AAR / XCFramework.
+- [./brownfield-integrated.md](./brownfield-integrated.md) — RN added directly to existing Gradle / CocoaPods.
 
 ## Quick decision rules
 
@@ -14,7 +14,7 @@ Use this reference to choose between the two ways of adding React Native + Expo 
 - **Choose integrated** if you want **hot reload, JS source maps, and devtools** to "just work" inside the existing native build with no extra orchestration.
 - **Choose integrated** if you expect to add many Expo modules and want them autolinked by the standard Expo tooling rather than rebuilt into a fresh artifact each time.
 
-When in doubt - and especially when the question is "can the native team avoid React Native tooling?" - pick **isolated**.
+When in doubt — and especially when the question is "can the native team avoid React Native tooling?" — pick **isolated**.
 
 ## Comparison
 
@@ -22,13 +22,13 @@ When in doubt - and especially when the question is "can the native team avoid R
 | ---------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | What ships to the native app                         | Prebuilt AAR + XCFramework                                              | React Native + Expo sources, autolinked into the existing build       |
 | Native team needs Node / Yarn / RN CLI               | **No**                                                                  | **Yes**                                                               |
-| Build-system footprint                               | Minimal - one Maven dependency, two embedded XCFrameworks               | Pervasive - React Native Gradle plugin, Podfile, autolinking, codegen |
+| Build-system footprint                               | Minimal — one Maven dependency, two embedded XCFrameworks               | Pervasive — React Native Gradle plugin, Podfile, autolinking, codegen |
 | Iteration speed for RN devs                          | Fast in isolation; native rebuild needed to pick up new artifact        | Fast end-to-end; one combined build                                   |
 | Dev-time hot reload                                  | Yes (via Metro, when running the consumer app in debug)                 | Yes (native build embeds Metro detection)                             |
 | Production JS bundle location                        | Embedded in the AAR/XCFramework                                         | Embedded in the APK/IPA by the RN Gradle plugin / Xcode build phase   |
 | Maintenance ownership                                | RN team owns the artifact pipeline; native team owns the consumer build | One team owns the unified build                                       |
-| Suitability for incremental adoption                 | High - easy to slot into one screen of an existing app                  | High, but with more setup before the first screen renders             |
-| Suitability for multi-repo / multi-team setups       | High                                                                    | Low - tends to require a monorepo                                     |
+| Suitability for incremental adoption                 | High — easy to slot into one screen of an existing app                  | High, but with more setup before the first screen renders             |
+| Suitability for multi-repo / multi-team setups       | High                                                                    | Low — tends to require a monorepo                                     |
 | Risk of build-system conflicts with existing tooling | Low                                                                     | Higher (RN Gradle plugin, codegen, Podfile assumptions)               |
 | Re-publish workflow for RN changes                   | `npx expo-brownfield build:*` then bump the dependency                  | Rebuild the native app                                                |
 
@@ -40,7 +40,7 @@ When in doubt - and especially when the question is "can the native team avoid R
 **"Our app uses a heavily customized Gradle setup with multiple variants and flavors."**
 → **Isolated.** The RN Gradle plugin is opinionated about variant naming and bundle output paths; integrating cleanly with non-standard variants is non-trivial.
 
-**"We don't know yet whether RN will stay - we want to be able to remove it cheaply."**
+**"We don't know yet whether RN will stay — we want to be able to remove it cheaply."**
 → **Isolated.** Removing the dependency removes the framework; the native build is barely touched.
 
 **"Our iOS team uses Tuist and refuses to add Node to the iOS build."**
@@ -54,10 +54,10 @@ When in doubt - and especially when the question is "can the native team avoid R
 
 ## What is identical between the approaches
 
-- The React Native + Expo source code itself - the same Expo project, the same `app.json`, the same modules - only differs in **how** it is shipped.
+- The React Native + Expo source code itself — the same Expo project, the same `app.json`, the same modules — only differs in **how** it is shipped.
 - The JavaScript module registered with `AppRegistry.registerComponent("main", () => App)` is the same; the native side passes the same `moduleName` string in both flows.
 
 ## What is different at runtime
 
-- **Isolated** uses Expo's brownfield runtime wrappers - `ReactNativeHostManager`, `BrownfieldActivity`, `ReactNativeViewController`, `ReactNativeView`. These are generated by `npx expo-brownfield build:*` and bundled into the artifact.
-- **Integrated** uses the standard React Native runtime - `ReactActivity`, `ReactActivityDelegate`, `RCTReactNativeFactory`, `ExpoReactNativeFactory` - exposed by `react-native` and `expo` directly.
+- **Isolated** uses Expo's brownfield runtime wrappers — `ReactNativeHostManager`, `BrownfieldActivity`, `ReactNativeViewController`, `ReactNativeView`. These are generated by `npx expo-brownfield build:*` and bundled into the artifact.
+- **Integrated** uses the standard React Native runtime — `ReactActivity`, `ReactActivityDelegate`, `RCTReactNativeFactory`, `ExpoReactNativeFactory` — exposed by `react-native` and `expo` directly.

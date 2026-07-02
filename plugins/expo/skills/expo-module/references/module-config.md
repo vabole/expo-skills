@@ -35,7 +35,7 @@ Example:
 
 ## Autolinking
 
-Expo autolinking automatically discovers and links modules that have `expo-module.config.json`. No manual native project configuration needed - install via npm, run `pod install`.
+Expo autolinking automatically discovers and links modules that have `expo-module.config.json`. No manual native project configuration needed — install via npm, run `pod install`.
 
 - standalone modules are resolved from dependencies and search paths.
 - local modules are resolved from the `modules` directory or `nativeModulesDir` if defined.

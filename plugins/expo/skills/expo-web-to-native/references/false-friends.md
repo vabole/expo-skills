@@ -23,7 +23,7 @@ This is the single source of truth for the mapping; the SKILL.md steps name a fe
 | `onChange={e => e.target.value}` | `onChangeText={text => ...}` | The handler receives the string directly, not an event. |
 | `onSubmit` (form) | `onPress` / `onSubmitEditing` | No `<form>` element and no submit event; wire the button/keyboard return key. |
 | `:hover`, `:focus` | press/focus state | No hover on touch. Track state and style from it, or use `Pressable`'s state callback. |
-| `e.preventDefault()` | - | No default actions to prevent; remove it. |
+| `e.preventDefault()` | — | No default actions to prevent; remove it. |
 
 ## Styling & layout
 
@@ -37,7 +37,7 @@ This is the single source of truth for the mapping; the SKILL.md steps name a fe
 | `position: fixed` | `position: absolute` + safe area | No `fixed`. Pin with `absolute` and respect insets (`react-native-safe-area-context`). |
 | `z-index` | `zIndex` (+ `elevation` on Android) | Works mostly, but Android shadow/stacking also needs `elevation`. |
 | CSS transitions / `@keyframes` | `Animated` / Reanimated | No CSS animation. Reanimated is the standard; gestures via `react-native-gesture-handler`. |
-| `gap`, flexbox | `gap`, flexbox | These largely transfer - flexbox is the one big win for web devs. |
+| `gap`, flexbox | `gap`, flexbox | These largely transfer — flexbox is the one big win for web devs. |
 
 ## Navigation & URLs
 
@@ -59,13 +59,13 @@ This is the single source of truth for the mapping; the SKILL.md steps name a fe
 | `cookies()` / `headers()` (server) | token in `expo-secure-store` | Server-only. Auth moves to a bearer token sent as a header. |
 | ORM / DB client in a page (Drizzle, Prisma) | server only - call over HTTP | The device never talks to the DB. Keep the backend deployed, or move routes to EAS Hosting (`eas-hosting`); the app fetches. |
 | `next/navigation` (`notFound`, `redirect`) | `expo-router` | `redirect()` → `router.replace`; `notFound()` → a native `+not-found` route. |
-| `_layout` as a DOM component | always native | Layout routes can't be DOM components - they *are* the native shell. Rewrite web-only layout logic (theme scripts, providers) with native APIs. |
+| `_layout` as a DOM component | always native | Layout routes can't be DOM components — they *are* the native shell. Rewrite web-only layout logic (theme scripts, providers) with native APIs. |
 
 ## Storage, state & sessions
 
 | Web | Native | Gotcha |
 |---|---|---|
-| `localStorage` / `sessionStorage` | `expo-sqlite` (`globalThis.localStorage`) | `import 'expo-sqlite/localStorage/install';` polyfills the global `localStorage`, so existing code works as-is (or `expo-sqlite/kv-store`). **No `sessionStorage` equivalent** - native has no session concept. |
+| `localStorage` / `sessionStorage` | `expo-sqlite` (`globalThis.localStorage`) | `import 'expo-sqlite/localStorage/install';` polyfills the global `localStorage`, so existing code works as-is (or `expo-sqlite/kv-store`). **No `sessionStorage` equivalent** — native has no session concept. |
 | Cookies / `document.cookie` | `expo-secure-store` + headers | No cookie jar by default. Store tokens in SecureStore; send as auth headers. |
 | Auth via session cookie | token in SecureStore | Redesign auth around bearer tokens, not browser sessions. |
 | In-memory React state | same | `useState`/`useReducer`/`useContext` transfer unchanged. |
@@ -78,17 +78,17 @@ This is the single source of truth for the mapping; the SKILL.md steps name a fe
 | `window.matchMedia('(prefers-color-scheme: dark)')` | `useColorScheme()` | Hook from `react-native`, reactive to the system theme. Web theme bootstrap scripts in the layout don't run. |
 | `window.innerWidth/Height` | `useWindowDimensions()` | Reactive hook; updates on rotation. |
 | `navigator.*`, Web APIs | Expo SDK modules | e.g. camera → `expo-camera`, geolocation → `expo-location`, clipboard → `expo-clipboard`. |
-| `alert()` / `confirm()` / `prompt()` | `alert()` works; `Alert.alert(...)` for the rest | RN provides a global `alert()`; `confirm()` / `prompt()` don't exist - use `Alert.alert` with a button array. |
+| `alert()` / `confirm()` / `prompt()` | `alert()` works; `Alert.alert(...)` for the rest | RN provides a global `alert()`; `confirm()` / `prompt()` don't exist — use `Alert.alert` with a button array. |
 | `process.env.X` | `process.env.EXPO_PUBLIC_X` | Only `EXPO_PUBLIC_`-prefixed vars are inlined into the client bundle. |
-| `console.log` | `console.log` | Works - shows in the dev tools/terminal. |
-| `dangerouslySetInnerHTML` | - | No DOM to inject into. Render data, or use a DOM component / WebView. |
+| `console.log` | `console.log` | Works — shows in the dev tools/terminal. |
+| `dangerouslySetInnerHTML` | — | No DOM to inject into. Render data, or use a DOM component / WebView. |
 | inline SVG | `react-native-svg` | No native `<svg>`; the library mirrors the element API. |
 
 ## Networking
 
 | Web | Native | Gotcha |
 |---|---|---|
-| `fetch('/api/x')` (relative) | absolute URL | Native has no origin - relative paths fail. Use a configured base URL (`EXPO_PUBLIC_API_URL`). |
+| `fetch('/api/x')` (relative) | absolute URL | Native has no origin — relative paths fail. Use a configured base URL (`EXPO_PUBLIC_API_URL`). |
 | CORS | n/a | No browser CORS, but you still need a reachable absolute host. |
 | `fetch`, React Query, SWR | same | The libraries themselves work on native - see `expo-data-fetching`. |
 | Next.js API routes | Expo Router API routes | Move server endpoints to Expo API routes on EAS Hosting - see `eas-hosting`. |
@@ -96,15 +96,15 @@ This is the single source of truth for the mapping; the SKILL.md steps name a fe
 
 ## Third-party services & SDKs
 
-Browser SDKs don't run on native - each needs a native equivalent. The canonical, version-matched integrations live in the `expo-examples` skill (the `expo/examples` repo); reach for those instead of wiring from scratch.
+Browser SDKs don't run on native — each needs a native equivalent. The canonical, version-matched integrations live in the `expo-examples` skill (the `expo/examples` repo); reach for those instead of wiring from scratch.
 
 | Web service | Native | Gotcha |
 |---|---|---|
-| **Stripe.js - digital goods / subscriptions** | store **In-App Purchase** via **RevenueCat** (`react-native-purchases`) | **Policy, not just an SDK swap.** Apple & Google *require* IAP for in-app digital goods and take ~15–30%; shipping Stripe for them gets the app rejected. Decide at assess time - it can change the business model. |
-| **Stripe.js - physical goods / services** | `@stripe/stripe-react-native` (PaymentSheet, Apple/Google Pay) | Stripe's RN SDK is allowed for physical goods; see `expo-examples` `with-stripe`. |
+| **Stripe.js — digital goods / subscriptions** | store **In-App Purchase** via **RevenueCat** (`react-native-purchases`) | **Policy, not just an SDK swap.** Apple & Google *require* IAP for in-app digital goods and take ~15–30%; shipping Stripe for them gets the app rejected. Decide at assess time — it can change the business model. |
+| **Stripe.js — physical goods / services** | `@stripe/stripe-react-native` (PaymentSheet, Apple/Google Pay) | Stripe's RN SDK is allowed for physical goods; see `expo-examples` `with-stripe`. |
 | Google Maps JS | `react-native-maps` | A native map view, not an embedded iframe. |
 | Web Push | `expo-notifications` (APNs / FCM) | Different delivery + permission model. |
-| OAuth redirect flow | `expo-auth-session` (deep-link OAuth), or a native auth SDK (Clerk, Supabase…) | No browser redirect - an app deep link completes the flow. |
+| OAuth redirect flow | `expo-auth-session` (deep-link OAuth), or a native auth SDK (Clerk, Supabase…) | No browser redirect — an app deep link completes the flow. |
 | GA / Segment.js analytics | native SDK (`posthog-react-native`, Segment RN) | The web JS snippet won't load; swap for the native SDK. |
 | `<input type=file>` / `getUserMedia` | `expo-image-picker` / `expo-camera` / `expo-document-picker` | Native pickers + runtime permissions. |
 

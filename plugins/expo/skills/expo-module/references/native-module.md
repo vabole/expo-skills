@@ -81,7 +81,7 @@ Events("onChange", "onError")
 sendEvent("onChange", ["value": newValue])
 ```
 
-**Kotlin difference** - uses `bundleOf`:
+**Kotlin difference** — uses `bundleOf`:
 
 ```kotlin
 sendEvent("onChange", bundleOf("value" to newValue))
@@ -152,7 +152,7 @@ Function("createUser") { (user: UserRecord) -> Bool in
 }
 ```
 
-**Kotlin difference** - uses `class` instead of `struct`, optional fields need explicit `= null`:
+**Kotlin difference** — uses `class` instead of `struct`, optional fields need explicit `= null`:
 
 ```kotlin
 class UserRecord : Record {
@@ -176,7 +176,7 @@ Function("setTheme") { (theme: Theme) in
 }
 ```
 
-**Kotlin difference** - uses `enum class` with explicit `value` property:
+**Kotlin difference** — uses `enum class` with explicit `value` property:
 
 ```kotlin
 enum class Theme(val value: String) : Enumerable {
@@ -233,7 +233,7 @@ class ImageContext: SharedObject {
 }
 ```
 
-**Kotlin difference** - takes `RuntimeContext` in constructor, override `sharedObjectDidRelease()` for cleanup:
+**Kotlin difference** — takes `RuntimeContext` in constructor, override `sharedObjectDidRelease()` for cleanup:
 
 ```kotlin
 class ImageContext(

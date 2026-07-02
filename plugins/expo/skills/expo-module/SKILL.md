@@ -75,7 +75,7 @@ The Swift and Kotlin DSL share the same structure. Swift is usually the clearest
 
 ## Module Structure Reference
 
-The Swift and Kotlin DSL share the same structure. Both platforms are shown here for reference - in other reference files, Swift is shown as the primary language unless the Kotlin pattern meaningfully differs.
+The Swift and Kotlin DSL share the same structure. Both platforms are shown here for reference — in other reference files, Swift is shown as the primary language unless the Kotlin pattern meaningfully differs.
 
 **Swift (iOS):**
 

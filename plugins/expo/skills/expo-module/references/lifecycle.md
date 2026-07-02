@@ -85,7 +85,7 @@ For hooking into Activity/Application lifecycle outside module definitions. Usef
 
 Supported callbacks: `onCreate`, `onResume`, `onPause`, `onDestroy`, `onNewIntent`, `onBackPressed`.
 
-> Note: `onStart` and `onStop` are **not supported** - the implementation hooks into `ReactActivityDelegate` which lacks these methods.
+> Note: `onStart` and `onStop` are **not supported** — the implementation hooks into `ReactActivityDelegate` which lacks these methods.
 
 ```kotlin
 class MyPackage : Package {
