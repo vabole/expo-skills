@@ -8,7 +8,7 @@
 const {
   POSTHOG_PROJECT_API_KEY,
   SOURCE,
-  telemetryDisabled,
+  telemetryActive,
   telemetryConfigured,
   detectHarness,
   platformProps,
@@ -77,8 +77,8 @@ function eventPayload(args) {
 async function main(argv) {
   const args = parseArgs(argv);
 
-  if (telemetryDisabled()) {
-    console.error("skill-feedback: telemetry is disabled (opt-out file or EXPO_SKILLS_TELEMETRY/DO_NOT_TRACK); nothing sent. Re-enable with telemetry.cjs --on.");
+  if (!args.dryRun && !telemetryActive()) {
+    console.error("skill-feedback: telemetry is off (opt-in, off by default); nothing sent. Enable with `telemetry.cjs --on` or EXPO_SKILLS_TELEMETRY=1.");
     return 0;
   }
   if (!telemetryConfigured() && !args.dryRun) {

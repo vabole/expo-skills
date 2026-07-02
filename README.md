@@ -149,20 +149,13 @@ Expo documentation, Expo CLI, and EAS CLI are the source of truth. These skills 
 
 ## Usage telemetry & feedback
 
-These skills send **anonymous** usage events on **Claude Code** so the Expo team can see how they're used and improve them. On first use a random ID is created locally at `~/.expo-skills/installation-id`; only a hash of it is sent. We never send source code, prompts, file paths, or personal data. Scripts are zero-dependency and run under Node or Bun.
+**Off by default — these skills send nothing unless you turn telemetry on.** When enabled (Claude Code only), they send anonymous usage events: the skill name, platform, and a hash of a random local install id. Never code, prompts, file paths, or personal data.
 
-- **Usage:** when a skill is invoked — by the AI or a user `/slash` command (`skill_invoked`, tagged with `initiator` = `ai` or `user`).
-- **Feedback:** every skill ends with an *Expo Skill Feedback* footer — a one-line command to send a quick rating + note.
+- **Turn on:** ask your agent to **"enable Expo skills telemetry"**, or set `EXPO_SKILLS_TELEMETRY=1`.
+- **Turn off:** ask it to disable telemetry, or set `EXPO_SKILLS_TELEMETRY=0` / `DO_NOT_TRACK=1`. CI never sends.
+- **Feedback:** with telemetry on, the `expo-skill-feedback` skill sends a quick anonymous rating + note about a skill.
 
-The wiring is Claude Code-specific (plugin hooks + footer), so other agents send nothing.
-
-Turn it off any time — the simplest way is to ask your agent: **"turn off Expo skills telemetry"** (it runs the bundled toggle, which writes `~/.expo-skills/opt-out` — a persistent switch that works regardless of how the agent was launched). For a global or CI opt-out, set an env var instead:
-
-```bash
-export DO_NOT_TRACK=1            # or: export EXPO_SKILLS_TELEMETRY=0
-```
-
-See the `expo-skill-feedback` skill for full details, the event shape, and how to configure the PostHog project key.
+Details live in the `expo-skill-feedback` skill.
 
 ## License
 

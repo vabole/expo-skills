@@ -17,7 +17,7 @@ const path = require("path");
 const {
   POSTHOG_PROJECT_API_KEY,
   SOURCE,
-  telemetryDisabled,
+  telemetryActive,
   telemetryConfigured,
   detectHarness,
   platformProps,
@@ -143,7 +143,7 @@ async function main(argv) {
   // Cheap, local, no-network gates: decide up front whether anything will be sent, so the
   // common "not an Expo skill / opted out" cases cost nothing and never spawn a child.
   if (!skill) return 0;                                            // not a skill invocation
-  if (telemetryDisabled()) return 0;
+  if (!args.dryRun && !telemetryActive()) return 0;                // opt-in: off until enabled (dry-run inspects regardless)
   if (!telemetryConfigured() && !args.dryRun) return 0;            // no key in this build (e.g. a fork) -> inert
   if (!skillBelongsToPlugin(skill, pluginRootFor(args))) return 0; // not one of ours
 

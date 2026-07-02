@@ -1,59 +1,65 @@
 #!/usr/bin/env node
 // Turn Expo skills usage telemetry on or off, or check its status.
 //
-// Usage:
-//   node telemetry.cjs --status        # show whether telemetry is on/off and why
-//   node telemetry.cjs --off           # disable (writes the opt-out file)
-//   node telemetry.cjs --on            # re-enable (removes the opt-out file)
+// Telemetry is OFF by default (opt-in) — nothing is sent until you enable it here or
+// via EXPO_SKILLS_TELEMETRY=1. Usage:
+//   node telemetry.cjs --status   # show whether telemetry is on/off and why
+//   node telemetry.cjs --on       # enable  (writes the opt-in marker)
+//   node telemetry.cjs --off      # disable (removes the opt-in marker — the default)
 //
-// The opt-out file is the reliable switch: it works no matter how the agent was
-// launched. The DO_NOT_TRACK / EXPO_SKILLS_TELEMETRY env vars also disable
-// telemetry (handy for CI), but env vars don't always reach hook subprocesses.
+// The opt-in marker is the reliable switch: it works no matter how the agent was
+// launched. EXPO_SKILLS_TELEMETRY=1/0 and DO_NOT_TRACK also work (handy for CI), but
+// env vars don't always reach hook subprocesses.
 
 const fs = require("fs");
 const path = require("path");
-const { OPT_OUT_PATH, telemetryConfigured, isCI } = require("./telemetry_common.cjs");
+const {
+  OPT_IN_PATH,
+  telemetryActive,
+  telemetryEnvSignal,
+  telemetryConfigured,
+  isCI,
+} = require("./telemetry_common.cjs");
 
-function disabledByEnv() {
-  const flag = String(process.env.EXPO_SKILLS_TELEMETRY || "").trim().toLowerCase();
-  if (["0", "false", "off", "no"].includes(flag)) return "EXPO_SKILLS_TELEMETRY";
-  const dnt = String(process.env.DO_NOT_TRACK || "").trim().toLowerCase();
-  if (dnt && dnt !== "0" && dnt !== "false") return "DO_NOT_TRACK";
-  return null;
+// One-line explanation of the current state (mirrors telemetryActive()'s precedence).
+function reason() {
+  const env = telemetryEnvSignal();
+  if (env === "off") return "env var (EXPO_SKILLS_TELEMETRY=0 / DO_NOT_TRACK)";
+  if (isCI()) return "CI environment (telemetry never emits from CI)";
+  if (env === "on") return "env var EXPO_SKILLS_TELEMETRY=1";
+  if (safeExists(OPT_IN_PATH)) return `opt-in marker (${OPT_IN_PATH})`;
+  return "default (opt-in — off until enabled)";
 }
 
+function safeExists(p) { try { return fs.existsSync(p); } catch { return false; } }
+
 function printStatus() {
-  const byFile = fs.existsSync(OPT_OUT_PATH);
-  const byEnv = disabledByEnv();
-  const byCI = isCI();
-  if (byFile || byEnv || byCI) {
-    const reasons = [];
-    if (byFile) reasons.push(`opt-out file (${OPT_OUT_PATH})`);
-    if (byCI) reasons.push("CI environment");
-    if (byEnv) reasons.push(`env var ${byEnv}`);
-    console.log(`Expo skills telemetry: DISABLED — via ${reasons.join(" and ")}.`);
-  } else if (!telemetryConfigured()) {
-    console.log("Expo skills telemetry: ENABLED, but no PostHog key in this build (key stripped to placeholder) — nothing is created or sent. Disable permanently with: telemetry.cjs --off");
+  const on = telemetryActive();
+  if (on && !telemetryConfigured()) {
+    console.log(`Expo skills telemetry: ON via ${reason()}, but no PostHog key in this build (stripped to placeholder) — nothing is sent.`);
+  } else if (on) {
+    console.log(`Expo skills telemetry: ON (anonymous) — ${reason()}. Turn off with: telemetry.cjs --off`);
   } else {
-    console.log("Expo skills telemetry: ENABLED (anonymous). Disable with: telemetry.cjs --off");
+    console.log(`Expo skills telemetry: OFF — ${reason()}. Turn on with: telemetry.cjs --on (or EXPO_SKILLS_TELEMETRY=1)`);
   }
 }
 
 const cmd = process.argv[2];
 
-if (cmd === "--off" || cmd === "--disable") {
-  fs.mkdirSync(path.dirname(OPT_OUT_PATH), { recursive: true, mode: 0o700 });
-  fs.writeFileSync(OPT_OUT_PATH, "Expo skills telemetry disabled by user.\n");
-  console.log(`Telemetry disabled — wrote ${OPT_OUT_PATH}`);
-  console.log("Re-enable any time with: telemetry.cjs --on");
-} else if (cmd === "--on" || cmd === "--enable") {
-  try { fs.rmSync(OPT_OUT_PATH, { force: true }); } catch {}
-  const byEnv = disabledByEnv();
-  console.log("Telemetry re-enabled — removed the opt-out file.");
-  if (byEnv) console.log(`Note: still disabled by env var ${byEnv}; unset it to fully re-enable.`);
+if (cmd === "--on" || cmd === "--enable") {
+  fs.mkdirSync(path.dirname(OPT_IN_PATH), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(OPT_IN_PATH, "Expo skills telemetry enabled by user.\n");
+  console.log(`Telemetry enabled — wrote ${OPT_IN_PATH}`);
+  if (telemetryEnvSignal() === "off") console.log("Note: an env var (EXPO_SKILLS_TELEMETRY=0 / DO_NOT_TRACK) still forces it OFF; unset it to send.");
+  else if (isCI()) console.log("Note: this looks like CI, where telemetry stays OFF regardless.");
+  console.log("Turn off any time with: telemetry.cjs --off");
+} else if (cmd === "--off" || cmd === "--disable") {
+  try { fs.rmSync(OPT_IN_PATH, { force: true }); } catch {}
+  console.log("Telemetry off — removed the opt-in marker (off is the default).");
+  if (telemetryEnvSignal() === "on") console.log("Note: EXPO_SKILLS_TELEMETRY=1 still forces it ON; unset it to stay off.");
 } else if (cmd === "--status" || cmd === undefined) {
   printStatus();
 } else {
-  console.error(`Unknown option: ${cmd}\nUsage: telemetry.cjs [--status | --off | --on]`);
+  console.error(`Unknown option: ${cmd}\nUsage: telemetry.cjs [--status | --on | --off]`);
   process.exit(2);
 }

@@ -23,13 +23,18 @@ const POSTHOG_PROJECT_API_KEY =
 const SOURCE = "expo-skills";
 const INSTALLATION_ID_PATH = path.join(os.homedir(), ".expo-skills", "installation-id");
 
-// Persistent opt-out marker. Checked before anything is sent, so it works
-// regardless of how the agent was launched (env vars don't always reach hook
-// subprocesses). Toggle it with scripts/telemetry.cjs --off / --on.
-const OPT_OUT_PATH = path.join(os.homedir(), ".expo-skills", "opt-out");
+// Opt-in is the model: telemetry is OFF by default and only sends once the user
+// explicitly enables it. This is the one product knob — flip to true for an opt-out
+// (on-by-default) model instead.
+const DEFAULT_ON = false;
 
-// CI detection — skip telemetry in automated environments so usage data reflects
-// real humans. Honors the common CI=true convention plus major providers' signals.
+// Persistent opt-in marker. Its presence turns telemetry on across sessions, regardless
+// of how the agent was launched (env vars don't always reach hook subprocesses).
+// Written / removed by scripts/telemetry.cjs --on / --off.
+const OPT_IN_PATH = path.join(os.homedir(), ".expo-skills", "opt-in");
+
+// CI detection — never emit from automated environments so usage data reflects real
+// humans. Honors the common CI=true convention plus major providers' signals.
 function isCI() {
   const ci = String(process.env.CI || "").trim().toLowerCase();
   if (ci && ci !== "0" && ci !== "false") return true;
@@ -45,16 +50,33 @@ function isCI() {
   );
 }
 
-// Opt-out switch: the persistent opt-out file, CI, or the EXPO_SKILLS_TELEMETRY /
-// DO_NOT_TRACK (https://consoledonottrack.com) env vars.
-function telemetryDisabled() {
-  try { if (fs.existsSync(OPT_OUT_PATH)) return true; } catch {}
-  if (isCI()) return true;
-  const flag = String(process.env.EXPO_SKILLS_TELEMETRY || "").trim().toLowerCase();
-  if (["0", "false", "off", "no"].includes(flag)) return true;
+// Explicit on/off intent from env vars: returns "on" | "off" | null.
+//   DO_NOT_TRACK=1                        -> off (https://consoledonottrack.com)
+//   EXPO_SKILLS_TELEMETRY=0/off/false/no  -> off
+//   EXPO_SKILLS_TELEMETRY=1/on/true/yes   -> on
+function telemetryEnvSignal() {
   const dnt = String(process.env.DO_NOT_TRACK || "").trim().toLowerCase();
-  if (dnt && dnt !== "0" && dnt !== "false") return true;
-  return false;
+  if (dnt && dnt !== "0" && dnt !== "false") return "off";
+  const flag = String(process.env.EXPO_SKILLS_TELEMETRY || "").trim().toLowerCase();
+  if (["0", "false", "off", "no"].includes(flag)) return "off";
+  if (["1", "true", "on", "yes"].includes(flag)) return "on";
+  return null;
+}
+
+// Master gate. Nothing is sent unless this returns true. Precedence (highest first):
+//   1. explicit env off (DO_NOT_TRACK / EXPO_SKILLS_TELEMETRY=0) -> off
+//   2. CI                                                        -> off (never emit from bots)
+//   3. explicit env on  (EXPO_SKILLS_TELEMETRY=1)                -> on
+//   4. persistent opt-in marker (telemetry.cjs --on)            -> on
+//   5. default                                                   -> DEFAULT_ON (off = opt-in)
+// So explicit-off and CI always win; otherwise it's on only when explicitly enabled.
+function telemetryActive() {
+  const env = telemetryEnvSignal();
+  if (env === "off") return false;
+  if (isCI()) return false;
+  if (env === "on") return true;
+  try { if (fs.existsSync(OPT_IN_PATH)) return true; } catch {}
+  return DEFAULT_ON;
 }
 
 // A real key ships in this file, so telemetry is ON by default. This guard only
@@ -137,8 +159,9 @@ function sendToPosthog(payload, { userAgent, timeoutMs }) {
 module.exports = {
   POSTHOG_PROJECT_API_KEY,
   SOURCE,
-  OPT_OUT_PATH,
-  telemetryDisabled,
+  OPT_IN_PATH,
+  telemetryActive,
+  telemetryEnvSignal,
   telemetryConfigured,
   detectHarness,
   isCI,
