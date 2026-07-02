@@ -1,13 +1,13 @@
 ---
 name: eas-app-stores
-description: EAS service (paid). Ship Expo apps to the app stores with EAS — build and submit to the iOS App Store, Google Play Store, and TestFlight, configure eas.json build and submit profiles, manage app versions and build numbers, and publish App Store metadata and ASO. Use whenever the user is preparing a production build, running eas build or eas submit, shipping to TestFlight, releasing or rolling out to the app stores, bumping version or build numbers, or setting up store listing metadata. For deploying an Expo website or API routes, use the eas-hosting skill.
+description: EAS service (paid). Ship Expo apps to the app stores with EAS - build and submit to the iOS App Store, Google Play Store, and TestFlight, configure eas.json build and submit profiles, manage app versions and build numbers, and publish App Store metadata and ASO. Use whenever the user is preparing a production build, running eas build or eas submit, shipping to TestFlight, releasing or rolling out to the app stores, bumping version or build numbers, or setting up store listing metadata. For deploying an Expo website or API routes, use the eas-hosting skill.
 version: 1.0.0
 license: MIT
 ---
 
 # App Store Deployment
 
-> **EAS service — costs apply.** This skill uses Expo Application Services (EAS), a paid product with free-tier limits. `eas build` and `eas submit` consume your plan's build minutes, and store submission requires paid Apple Developer and Google Play accounts. Review https://expo.dev/pricing before running cloud commands.
+> **EAS service - costs apply.** This skill uses Expo Application Services (EAS), a paid product with free-tier limits. `eas build` and `eas submit` consume your plan's build minutes, and store submission requires paid Apple Developer and Google Play accounts. Review https://expo.dev/pricing before running cloud commands.
 
 This skill covers building and releasing Expo apps to the iOS App Store, Google Play Store, and TestFlight using EAS (Expo Application Services). For deploying an Expo website or API routes to EAS Hosting, use the `eas-hosting` skill.
 
@@ -130,7 +130,7 @@ Standard `eas.json` for production deployments:
 
 ## Automated Deployments
 
-EAS Workflows automate the build → submit → update → deploy pipeline for CI/CD. See ./references/workflows.md for deployment-oriented examples. To author or validate workflow YAML, use the `eas-workflows` skill — it works from the live workflow schema.
+EAS Workflows automate the build → submit → update → deploy pipeline for CI/CD. See ./references/workflows.md for deployment-oriented examples. To author or validate workflow YAML, use the `eas-workflows` skill - it works from the live workflow schema.
 
 ## Version Management
 

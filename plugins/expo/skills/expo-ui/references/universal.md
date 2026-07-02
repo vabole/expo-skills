@@ -2,7 +2,7 @@
 
 > Requires Expo SDK 56+.
 
-Universal components are a single-API layer over the platform-native UI toolkits: Jetpack Compose on Android, SwiftUI on iOS, and `react-native-web` / `react-dom` on web. You write one component tree that runs unmodified on all three platforms while keeping a native look and feel — no `.ios.tsx` / `.android.tsx` split.
+Universal components are a single-API layer over the platform-native UI toolkits: Jetpack Compose on Android, SwiftUI on iOS, and `react-native-web` / `react-dom` on web. You write one component tree that runs unmodified on all three platforms while keeping a native look and feel - no `.ios.tsx` / `.android.tsx` split.
 
 ## Usage
 
@@ -30,11 +30,11 @@ import { Host, Column, Button, Text } from '@expo/ui';
 | Disclosure & presentation | `BottomSheet`, `Collapsible` |
 | Collections & forms | `List` (with `ListItem`), `FieldGroup` |
 
-> **`List` is not suitable for large lists.** Each `ListItem` is a JSX node processed on the JS thread — for large datasets this causes noticeable slowdowns.
+> **`List` is not suitable for large lists.** Each `ListItem` is a JSX node processed on the JS thread - for large datasets this causes noticeable slowdowns.
 
 ## TextInput and useNativeState
 
-`TextInput` from `@expo/ui` is **not like React Native's TextInput** — its `value` and `selection` props take an `ObservableState` object (from `useNativeState`), not a plain string. This is what enables synchronous, flicker-free updates: when the user types, `onChangeText` runs as a worklet on the UI thread and writes directly to `value` without a React render cycle.
+`TextInput` from `@expo/ui` is **not like React Native's TextInput** - its `value` and `selection` props take an `ObservableState` object (from `useNativeState`), not a plain string. This is what enables synchronous, flicker-free updates: when the user types, `onChangeText` runs as a worklet on the UI thread and writes directly to `value` without a React render cycle.
 
 Requires `react-native-worklets`. Without it the worklet directive has no effect and flickering remains.
 
@@ -47,7 +47,7 @@ export default function MyInput() {
 
   const handleChangeText = useCallback((value: string) => {
     'worklet';
-    // transform synchronously on the UI thread — no React re-render
+    // transform synchronously on the UI thread - no React re-render
     text.value = value === 'Hello' ? 'World' : value;
   }, [text]);
 
@@ -59,15 +59,15 @@ export default function MyInput() {
 }
 ```
 
-Docs — https://docs.expo.dev/versions/latest/sdk/ui/universal/textinput/index.md
+Docs - https://docs.expo.dev/versions/latest/sdk/ui/universal/textinput/index.md
 
 ## Confirming the API
 
-`@expo/ui` is versioned with the Expo SDK (e.g. `56.0.x` for SDK 56) and its API can change between SDK versions, so the **installed package's TypeScript types (`.d.ts`) are the most reliable source of truth** — they match the version in your project, while the docs track latest. Read the relevant component's `.d.ts` from the installed `@expo/ui` package in `node_modules`. Use the docs as the human-readable reference:
+`@expo/ui` is versioned with the Expo SDK (e.g. `56.0.x` for SDK 56) and its API can change between SDK versions, so the **installed package's TypeScript types (`.d.ts`) are the most reliable source of truth** - they match the version in your project, while the docs track latest. Read the relevant component's `.d.ts` from the installed `@expo/ui` package in `node_modules`. Use the docs as the human-readable reference:
 
-- Overview — https://docs.expo.dev/versions/latest/sdk/ui/universal/index.md
-- Per component — https://docs.expo.dev/versions/latest/sdk/ui/universal/{component-name}/index.md
+- Overview - https://docs.expo.dev/versions/latest/sdk/ui/universal/index.md
+- Per component - https://docs.expo.dev/versions/latest/sdk/ui/universal/{component-name}/index.md
 
 ## When to drop down to a platform-specific layer
 
-Choose universal components whenever they cover the requirement. Drop down to `@expo/ui/swift-ui` or `@expo/ui/jetpack-compose` only when the universal API doesn't expose the component, modifier, or platform-specific behavior you need — accepting the per-platform file split that requires. See `./swift-ui.md` and `./jetpack-compose.md`.
+Choose universal components whenever they cover the requirement. Drop down to `@expo/ui/swift-ui` or `@expo/ui/jetpack-compose` only when the universal API doesn't expose the component, modifier, or platform-specific behavior you need - accepting the per-platform file split that requires. See `./swift-ui.md` and `./jetpack-compose.md`.

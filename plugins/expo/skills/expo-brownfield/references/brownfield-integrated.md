@@ -1,6 +1,6 @@
 # Brownfield: Integrated Approach
 
-Add React Native and Expo directly to the existing native project's build system — Gradle on Android, CocoaPods on iOS — the same way you would add any other library. The native project gains React Native capabilities while keeping a single, unified build.
+Add React Native and Expo directly to the existing native project's build system - Gradle on Android, CocoaPods on iOS - the same way you would add any other library. The native project gains React Native capabilities while keeping a single, unified build.
 
 ## When to use
 
@@ -13,22 +13,22 @@ If the native team must not need Node, Yarn, or React Native tooling, use [./bro
 
 ## Prerequisites
 
-- **Expo SDK 54 or later** — the `ExpoReactHostFactory`, `ExpoReactNativeFactory`, and `ApplicationLifecycleDispatcher` entry points used below require SDK 54+. Earlier SDKs do not support this setup.
-- **Node.js (LTS)** — runs JavaScript and the Expo CLI.
-- **Yarn** — manages JavaScript dependencies.
-- **CocoaPods** (iOS) — `sudo gem install cocoapods`.
+- **Expo SDK 54 or later** - the `ExpoReactHostFactory`, `ExpoReactNativeFactory`, and `ApplicationLifecycleDispatcher` entry points used below require SDK 54+. Earlier SDKs do not support this setup.
+- **Node.js (LTS)** - runs JavaScript and the Expo CLI.
+- **Yarn** - manages JavaScript dependencies.
+- **CocoaPods** (iOS) - `sudo gem install cocoapods`.
 
 ---
 
 ## 1) Create an Expo project
 
-Create the Expo project inside (or alongside) the existing native project. **Pin to SDK 55 or later — earlier SDKs do not support brownfield integration:**
+Create the Expo project inside (or alongside) the existing native project. **Pin to SDK 55 or later - earlier SDKs do not support brownfield integration:**
 
 ```sh
 npx create-expo-app@latest my-project --template default@sdk-55
 ```
 
-The new project ships a TypeScript example app. The JS entry point registers a root component under the name `"main"` — this name must match the `moduleName` referenced from the native side later.
+The new project ships a TypeScript example app. The JS entry point registers a root component under the name `"main"` - this name must match the `moduleName` referenced from the native side later.
 
 ## 2) Place native projects under the Expo project
 
@@ -324,7 +324,7 @@ target 'MyApp' do
 end
 ```
 
-Replace `'MyApp'` with the existing Xcode target name. The `:app_path` value tells `use_react_native!` where the JS app lives — set it to the absolute path of your Expo project root if you are in a monorepo.
+Replace `'MyApp'` with the existing Xcode target name. The `:app_path` value tells `use_react_native!` where the JS app lives - set it to the absolute path of your Expo project root if you are in a monorepo.
 
 Create `ios/Podfile.properties.json` alongside the Podfile (defaults are fine):
 
@@ -508,12 +508,12 @@ Start Metro from the Expo project (or `yarn start` from the monorepo root):
 yarn start
 ```
 
-Build and run the native app normally (Android Studio / Xcode). Navigate to your React Native–powered Activity or screen — it loads JS from the Metro dev server with hot reloading.
+Build and run the native app normally (Android Studio / Xcode). Navigate to your React Native–powered Activity or screen - it loads JS from the Metro dev server with hot reloading.
 
 ### Development vs. production
 
-- **Development** — Metro serves the JS bundle with hot reloading over HTTP. Debug builds use the Metro URL via `RCTBundleURLProvider` (iOS) or the dev server detection in `ReactActivity` (Android).
-- **Production** — Metro is not used. Run `expo export:embed` (invoked automatically by the React Native Gradle plugin and the iOS build phase) to embed the bundle into the APK/IPA.
+- **Development** - Metro serves the JS bundle with hot reloading over HTTP. Debug builds use the Metro URL via `RCTBundleURLProvider` (iOS) or the dev server detection in `ReactActivity` (Android).
+- **Production** - Metro is not used. Run `expo export:embed` (invoked automatically by the React Native Gradle plugin and the iOS build phase) to embed the bundle into the APK/IPA.
 
 For Metro connection issues, build failures, missing modules, or arch mismatches, see [./troubleshooting.md](./troubleshooting.md).
 
@@ -521,6 +521,6 @@ For Metro connection issues, build failures, missing modules, or arch mismatches
 
 ## Related references
 
-- [./brownfield-isolated.md](./brownfield-isolated.md) — Alternative: ship RN as a prebuilt AAR/XCFramework.
-- [./comparison.md](./comparison.md) — Decide between isolated and integrated.
-- [./troubleshooting.md](./troubleshooting.md) — Common Metro, build, and integration issues.
+- [./brownfield-isolated.md](./brownfield-isolated.md) - Alternative: ship RN as a prebuilt AAR/XCFramework.
+- [./comparison.md](./comparison.md) - Decide between isolated and integrated.
+- [./troubleshooting.md](./troubleshooting.md) - Common Metro, build, and integration issues.

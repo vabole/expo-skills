@@ -8,7 +8,7 @@ allowed-tools: "Bash(eas *)"
 
 # EAS Update Insights
 
-> **EAS service — costs apply.** Insights cover updates published through EAS Update, a paid Expo Application Services product with free-tier limits. Update delivery and the data behind these commands count against your plan's EAS Update usage. Review https://expo.dev/pricing.
+> **EAS service - costs apply.** Insights cover updates published through EAS Update, a paid Expo Application Services product with free-tier limits. Update delivery and the data behind these commands count against your plan's EAS Update usage. Review https://expo.dev/pricing.
 
 Query the health of published EAS Updates directly from the CLI: launches, failed launches, crash rates, unique users, payload size, the embedded-vs-OTA user split per channel, and the most popular updates per runtime version. The data is the same data that powers the update and channel detail pages on expo.dev; these commands expose it in the terminal in human and JSON form.
 
@@ -113,9 +113,9 @@ Fields that matter for health assessment:
 
 ### Errors
 
-- `Could not find any updates with group ID: "<id>"` — group doesn't exist or you lack access.
-- `Update group "<id>" has no ios update (available platforms: android)` — `--platform ios` was used but the group wasn't published for iOS.
-- `EAS Update insights is not supported by this version of eas-cli. Please upgrade ...` — the server deprecated a field the CLI relies on. Run `npm install -g eas-cli@latest`.
+- `Could not find any updates with group ID: "<id>"` - group doesn't exist or you lack access.
+- `Update group "<id>" has no ios update (available platforms: android)` - `--platform ios` was used but the group wasn't published for iOS.
+- `EAS Update insights is not supported by this version of eas-cli. Please upgrade ...` - the server deprecated a field the CLI relies on. Run `npm install -g eas-cli@latest`.
 
 ## `eas update:view <groupId> --insights`
 
@@ -130,7 +130,7 @@ eas update:view 03d5dfcf-... --insights --days 30
 eas update:view 03d5dfcf-... --json --insights
 ```
 
-Without `--insights`, `update:view` behaves exactly as before — no JSON shape change for existing consumers. The `--days` / `--start` / `--end` flags only apply when `--insights` is set; passing them alone errors.
+Without `--insights`, `update:view` behaves exactly as before - no JSON shape change for existing consumers. The `--days` / `--start` / `--end` flags only apply when `--insights` is set; passing them alone errors.
 
 ## `eas channel:insights --channel <name> --runtime-version <version>`
 
@@ -166,8 +166,8 @@ Fields that matter:
 
 ### Errors
 
-- `Could not find channel with the name <name>` — typo or wrong account.
-- "No update launches recorded" in the table / empty `mostPopularUpdates` in JSON — no OTA update has been launched for that channel + runtime yet. Usually means the channel is still serving the embedded build only.
+- `Could not find channel with the name <name>` - typo or wrong account.
+- "No update launches recorded" in the table / empty `mostPopularUpdates` in JSON - no OTA update has been launched for that channel + runtime yet. Usually means the channel is still serving the embedded build only.
 
 ## Common workflows
 
@@ -213,7 +213,7 @@ eas update:insights "$GROUP_ID" --days 1 --json --non-interactive \
 eas update:view "$GROUP_ID" --insights --days 30
 ```
 
-Human-readable group details plus 30 days of launches/failures per platform — suitable for pasting into a changelog or incident review.
+Human-readable group details plus 30 days of launches/failures per platform - suitable for pasting into a changelog or incident review.
 
 ## Output tips
 

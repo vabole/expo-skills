@@ -1,6 +1,6 @@
 # Expo Skills Index
 
-Every skill in this directory is a sibling folder containing a `SKILL.md`. Skills are discovered **one level deep** — `skills/<skill-name>/SKILL.md` — so this index groups them for humans; the filesystem stays flat. Each skill's frontmatter `description` is prefixed with its category so agents can see the free vs paid boundary in the always-loaded metadata.
+Every skill in this directory is a sibling folder containing a `SKILL.md`. Skills are discovered **one level deep** - `skills/<skill-name>/SKILL.md` - so this index groups them for humans; the filesystem stays flat. Each skill's frontmatter `description` is prefixed with its category so agents can see the free vs paid boundary in the always-loaded metadata.
 
 ## Framework (open source)
 
@@ -36,7 +36,7 @@ Skills whose core purpose uses paid Expo Application Services (EAS). Description
 
 ## Adding a skill
 
-1. Create `skills/<skill-name>/SKILL.md` (one level deep — do not nest under a category folder, or it will not be discovered).
+1. Create `skills/<skill-name>/SKILL.md` (one level deep - do not nest under a category folder, or it will not be discovered).
 2. Prefix the frontmatter `description` with the category label (`Framework (OSS).` or `EAS service (paid).` / `Paid distribution (Apple).`).
 3. For a services skill, open the body with a costs/plan-limits callout right after the H1.
 4. Add the skill to the table above, to `skills.sh.json`, and to the root and plugin `README.md` lists.

@@ -123,7 +123,7 @@ Skills that use paid Expo Application Services (EAS) or paid app-store distribut
 | `eas-workflows` | EAS Workflow YAML files and CI/CD automation. |
 | `eas-observe` | EAS Observe setup and launch, route, event, and version metrics. |
 | `eas-update-insights` | EAS Update health, crash rates, launch counts, payload size, and rollout gates. |
-| `eas-simulator` | Run and drive your app on a remote iOS simulator or Android emulator on EAS cloud — from the CLI or an agent, with a live browser preview (iOS only). |
+| `eas-simulator` | Run and drive your app on a remote iOS simulator or Android emulator on EAS cloud - from the CLI or an agent, with a live browser preview (iOS only). |
 
 ## Expo MCP Server
 

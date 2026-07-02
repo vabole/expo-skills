@@ -39,9 +39,9 @@ const ComposeList = Platform.OS === 'android' ? require('../components/ProductLi
   node <skill-root>/scripts/list-components.js <project-path> --docs   # with one-line descriptions
   ```
   (`<skill-root>` is the directory containing this `references/` folder.)
-- **Always read the `.d.ts` type files** to confirm prop shapes and signatures — read the relevant `{ComponentName}/index.d.ts` from the installed `@expo/ui/jetpack-compose` package in `node_modules`. This is the most reliable source of truth.
-- When about to use a component, fetch its docs to confirm the API — https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/{component-name}/index.md
-- When unsure about a modifier's API, refer to the docs — https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/modifiers/index.md
+- **Always read the `.d.ts` type files** to confirm prop shapes and signatures - read the relevant `{ComponentName}/index.d.ts` from the installed `@expo/ui/jetpack-compose` package in `node_modules`. This is the most reliable source of truth.
+- When about to use a component, fetch its docs to confirm the API - https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/{component-name}/index.md
+- When unsure about a modifier's API, refer to the docs - https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/modifiers/index.md
 - Every Jetpack Compose tree must be wrapped in `Host`. Use `<Host matchContents>` for intrinsic sizing, or `<Host style={{ flex: 1 }}>` when you need explicit size (e.g. as a parent of `LazyColumn`). Example:
 
 ```jsx
@@ -57,17 +57,17 @@ import { fillMaxWidth, paddingAll } from "@expo/ui/jetpack-compose/modifiers";
 </Host>;
 ```
 
-- `RNHostView` embeds React Native components inside a Jetpack Compose tree (the same concept as in `@expo/ui/swift-ui`) — wrap any RN child in `<RNHostView>`.
+- `RNHostView` embeds React Native components inside a Jetpack Compose tree (the same concept as in `@expo/ui/swift-ui`) - wrap any RN child in `<RNHostView>`.
 - If a required composable or modifier is missing in Expo UI, it can be extended via a local Expo module. See: https://docs.expo.dev/guides/expo-ui-jetpack-compose/extending/index.md. Confirm with the user before extending.
 
 ## Key Components
 
-- **LazyColumn** — Use instead of react-native `ScrollView`/`FlatList` for scrollable lists. Wrap in `<Host style={{ flex: 1 }}>`. Not suitable for large lists — each item is a JSX node processed on the JS thread, which causes noticeable slowdowns at scale.
-- **Icon** — Use `<Icon source={require('./icon.xml')} size={24} />` with Android XML vector drawables. To get icons: go to [Material Symbols](https://fonts.google.com/icons), select an icon, choose the Android platform, and download the XML vector drawable. Save these as `.xml` files in your project's `assets/` directory (e.g. `assets/icons/wifi.xml`). Metro bundles `.xml` assets automatically — no metro config changes needed.
+- **LazyColumn** - Use instead of react-native `ScrollView`/`FlatList` for scrollable lists. Wrap in `<Host style={{ flex: 1 }}>`. Not suitable for large lists - each item is a JSX node processed on the JS thread, which causes noticeable slowdowns at scale.
+- **Icon** - Use `<Icon source={require('./icon.xml')} size={24} />` with Android XML vector drawables. To get icons: go to [Material Symbols](https://fonts.google.com/icons), select an icon, choose the Android platform, and download the XML vector drawable. Save these as `.xml` files in your project's `assets/` directory (e.g. `assets/icons/wifi.xml`). Metro bundles `.xml` assets automatically - no metro config changes needed.
 
 ## useNativeState
 
-`useNativeState` creates observable state that updates synchronously on the UI thread via worklets, enabling immediate native state changes without waiting for a React render cycle. Requires `react-native-worklets` — without it updates still go through React and flickering remains. Best for real-time interactions where synchronous updates matter, e.g. a text field that masks or formats input as the user types.
+`useNativeState` creates observable state that updates synchronously on the UI thread via worklets, enabling immediate native state changes without waiting for a React render cycle. Requires `react-native-worklets` - without it updates still go through React and flickering remains. Best for real-time interactions where synchronous updates matter, e.g. a text field that masks or formats input as the user types.
 
 - `ObservableState.value` is readable/writable from worklets; `onChange` fires a worklet listener on state change.
-- Docs — https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/usenativestate/index.md
+- Docs - https://docs.expo.dev/versions/latest/sdk/ui/jetpack-compose/usenativestate/index.md

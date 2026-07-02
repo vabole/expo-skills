@@ -18,7 +18,7 @@ For the full decision matrix, see [./references/comparison.md](./references/comp
 
 ## Pick an approach
 
-Use these quick rules — fall through to `comparison.md` for anything ambiguous.
+Use these quick rules - fall through to `comparison.md` for anything ambiguous.
 
 - **Choose isolated** if the iOS/Android team must consume RN as a regular library dependency (AAR or XCFramework), without installing Node, Yarn, or the React Native build toolchain.
 - **Choose isolated** if RN code and native code live in separate repositories or release on independent cadences.
@@ -38,8 +38,8 @@ More information available at https://docs.expo.dev/brownfield/overview/
 
 Both approaches require, in the environment that _builds_ the React Native side:
 
-- **Node.js (LTS)** — runs the Expo CLI and JavaScript code.
-- **Yarn** — manages JavaScript dependencies.
+- **Node.js (LTS)** - runs the Expo CLI and JavaScript code.
+- **Yarn** - manages JavaScript dependencies.
 
 The integrated approach additionally requires **CocoaPods** on iOS (`sudo gem install cocoapods`). The isolated approach does **not** require CocoaPods or any RN tooling in the consuming native app.
 

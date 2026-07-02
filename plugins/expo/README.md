@@ -61,27 +61,27 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 
 ### Framework (open source)
 
-- **expo-router** — Build beautiful apps with Expo Router, styling, components, navigation, and animations
-- **expo-ui** — Native UI with @expo/ui: universal cross-platform components first, with SwiftUI and Jetpack Compose for platform-specific needs
-- **expo-data-fetching** — Network requests, API calls, caching, and offline support
-- **expo-tailwind-setup** — Set up Tailwind CSS v4 in Expo with NativeWind v5
-- **expo-dom** — Run web code in a webview on native using DOM components
-- **expo-web-to-native** — Migrate an existing web/React app to a native iOS/Android app with Expo
-- **expo-module** — Write Expo native modules and views (Swift, Kotlin, TypeScript, config plugins)
-- **expo-brownfield** — Integrate Expo and React Native into existing native iOS or Android apps
-- **expo-dev-client** — Build and distribute Expo development clients (local builds free; EAS Build/TestFlight paid)
-- **expo-examples** — Adapt or scaffold from the `expo/examples` repo of `with-*` integrations
-- **expo-app-clip** — Add an iOS App Clip target (AASA, associated domains, Smart App Banners; needs an Apple Developer account)
-- **expo-upgrade** — Upgrade Expo SDK versions and fix dependency issues
+- **expo-router** - Build beautiful apps with Expo Router, styling, components, navigation, and animations
+- **expo-ui** - Native UI with @expo/ui: universal cross-platform components first, with SwiftUI and Jetpack Compose for platform-specific needs
+- **expo-data-fetching** - Network requests, API calls, caching, and offline support
+- **expo-tailwind-setup** - Set up Tailwind CSS v4 in Expo with NativeWind v5
+- **expo-dom** - Run web code in a webview on native using DOM components
+- **expo-web-to-native** - Migrate an existing web/React app to a native iOS/Android app with Expo
+- **expo-module** - Write Expo native modules and views (Swift, Kotlin, TypeScript, config plugins)
+- **expo-brownfield** - Integrate Expo and React Native into existing native iOS or Android apps
+- **expo-dev-client** - Build and distribute Expo development clients (local builds free; EAS Build/TestFlight paid)
+- **expo-examples** - Adapt or scaffold from the `expo/examples` repo of `with-*` integrations
+- **expo-app-clip** - Add an iOS App Clip target (AASA, associated domains, Smart App Banners; needs an Apple Developer account)
+- **expo-upgrade** - Upgrade Expo SDK versions and fix dependency issues
 
 ### Services & paid distribution
 
-- **eas-app-stores** — Build and submit to the iOS App Store, Android Play Store, and TestFlight
-- **eas-hosting** — Deploy Expo websites and API routes to EAS Hosting (secrets, custom domains, Cloudflare Workers)
-- **eas-workflows** — EAS workflow YAML files for CI/CD pipelines
-- **eas-observe** — EAS Observe setup and launch, route, event, and version metrics
-- **eas-update-insights** — Check EAS Update health, crash rates, adoption, and payload size
-- **eas-simulator** — Run and drive your app on a remote iOS/Android simulator on EAS cloud, from the CLI or an AI agent
+- **eas-app-stores** - Build and submit to the iOS App Store, Android Play Store, and TestFlight
+- **eas-hosting** - Deploy Expo websites and API routes to EAS Hosting (secrets, custom domains, Cloudflare Workers)
+- **eas-workflows** - EAS workflow YAML files for CI/CD pipelines
+- **eas-observe** - EAS Observe setup and launch, route, event, and version metrics
+- **eas-update-insights** - Check EAS Update health, crash rates, adoption, and payload size
+- **eas-simulator** - Run and drive your app on a remote iOS/Android simulator on EAS cloud, from the CLI or an AI agent
 
 ## License
 

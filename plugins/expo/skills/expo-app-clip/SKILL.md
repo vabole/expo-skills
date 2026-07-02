@@ -34,11 +34,11 @@ bun create target clip
 
 This installs [`@bacons/apple-targets`](https://github.com/EvanBacon/expo-apple-targets), adds it to the `plugins` array in `app.json`, and writes:
 
-- `targets/clip/expo-target.config.js` — the target's config plugin
-- `targets/clip/Info.plist` — Clip Info.plist
+- `targets/clip/expo-target.config.js` - the target's config plugin
+- `targets/clip/Info.plist` - Clip Info.plist
 - `targets/clip/AppDelegate.swift`, `Assets.xcassets`, etc.
 
-Pick a good icon or reuse the existing one defined in the app — check it with `bunx expo config` under the `icon` or `ios.icon` key.
+Pick a good icon or reuse the existing one defined in the app - check it with `bunx expo config` under the `icon` or `ios.icon` key.
 
 ## 3. Wire up associated domains
 
@@ -124,7 +124,7 @@ Notes:
 - The file has **no extension** and **no `Content-Type` requirements** beyond being served as-is. Expo Router static export serves files in `public/` verbatim.
 - The `appclips` block is what lets a URL on the domain launch the Clip.
 - `webcredentials` is used for sharing credentials between the website, parent app, and the App Clip.
-- `activitycontinuation` is optional and used for sharing the link between mobile and desktop. Must be used with `Head` from expo-router — see https://docs.expo.dev/router/advanced/apple-handoff/
+- `activitycontinuation` is optional and used for sharing the link between mobile and desktop. Must be used with `Head` from expo-router - see https://docs.expo.dev/router/advanced/apple-handoff/
 - Notation and route-disabling details: https://sosumi.ai/documentation/xcode/supporting-associated-domains
 
 ## 6. Add the Smart App Banner meta tag
@@ -188,9 +188,9 @@ Inspect the parent app's permissions after prebuild:
 npx expo config --type introspect
 ```
 
-Look at the `infoPlist` object — mirror the permission keys in the App Clip's `Info.plist` so matching APIs can be used from the Clip.
+Look at the `infoPlist` object - mirror the permission keys in the App Clip's `Info.plist` so matching APIs can be used from the Clip.
 
-Set `deploymentTarget: "17.6"` in the Clip's target config — App Clips have a higher minimum size limit in iOS 17.6.
+Set `deploymentTarget: "17.6"` in the Clip's target config - App Clips have a higher minimum size limit in iOS 17.6.
 
 If the app uses push notifications or location services, add to the App Clip's `Info.plist` to request the necessary permissions:
 
@@ -214,7 +214,7 @@ This will:
 
 1. Generate an `eas.json` if missing.
 2. Set up credentials for **both** targets (parent + Clip). Each gets its own provisioning profile but can share a single Distribution Certificate.
-3. Sync capabilities — note `Enabled: Associated Domains` for the Clip target.
+3. Sync capabilities - note `Enabled: Associated Domains` for the Clip target.
 4. Build, upload, and schedule a TestFlight submission.
 
 ## 10. Configure App Clip metadata
@@ -279,4 +279,4 @@ See [./references/native-module.md](./references/native-module.md) for the Swift
 
 ## References
 
-- ./references/native-module.md — Local Expo module to detect App Clip context and present the SKOverlay install prompt
+- ./references/native-module.md - Local Expo module to detect App Clip context and present the SKOverlay install prompt

@@ -9,17 +9,17 @@ EAS Observe collects app performance telemetry and custom events from Expo apps 
 | `eas observe:metrics-summary` | Per-version statistical aggregates for app-startup performance metrics (median, p90, etc.) |
 | `eas observe:metrics` | Individual performance metric samples ordered by value or timestamp (paginated) |
 | `eas observe:routes` | Per-route statistical aggregates for navigation metrics (Cold TTR, Warm TTR, Nav TTI) |
-| `eas observe:events` | Custom events emitted by the app via `logEvent` — name summary, all events, or filtered by event name (paginated) |
+| `eas observe:events` | Custom events emitted by the app via `logEvent` - name summary, all events, or filtered by event name (paginated) |
 | `eas observe:versions` | App version hierarchy with build numbers, OTA update IDs, and event counts |
 
 All five commands share these common flags:
 
-- `--platform ios` or `--platform android` — filter by platform (default: both)
-- `--start <ISO date>` and `--end <ISO date>` — explicit time range
-- `--days <N>` — show data from the last N days (mutually exclusive with `--start`/`--end`)
-- `--project-id <id>` — run against a specific project without needing a project directory. When passed, the command will not try to create a new EAS project where one is unneeded.
-- `--json` — machine-readable output (implies `--non-interactive`)
-- `--non-interactive` — fail instead of prompting
+- `--platform ios` or `--platform android` - filter by platform (default: both)
+- `--start <ISO date>` and `--end <ISO date>` - explicit time range
+- `--days <N>` - show data from the last N days (mutually exclusive with `--start`/`--end`)
+- `--project-id <id>` - run against a specific project without needing a project directory. When passed, the command will not try to create a new EAS project where one is unneeded.
+- `--json` - machine-readable output (implies `--non-interactive`)
+- `--non-interactive` - fail instead of prompting
 
 Default time range is the last 60 days when none of `--days`, `--start`, `--end` is given.
 
@@ -59,7 +59,7 @@ eas observe:metrics-summary
 # Single metric
 eas observe:metrics-summary --metric tti
 
-# Multiple metrics — each renders as its own table
+# Multiple metrics - each renders as its own table
 eas observe:metrics-summary --metric tti --metric cold_launch
 
 # Choose which statistics to display
@@ -114,19 +114,19 @@ eas observe:metrics tti
 # Filter by version or update, sort by slowest
 eas observe:metrics tti --app-version 1.2.0 --sort slowest --limit 20
 
-# Pagination — pass the endCursor from the previous run
+# Pagination - pass the endCursor from the previous run
 eas observe:metrics tti --after <cursor>
 ```
 
 **Sample-specific flags:**
-- `--sort <oldest|newest|slowest|fastest>` — defaults to `oldest`
-- `--limit <N>` — samples per page (default 10, max 100)
-- `--after <cursor>` — pagination cursor from the previous run
-- `--app-version <version>` — filter by app version string
-- `--update-id <id>` — filter by EAS update ID
+- `--sort <oldest|newest|slowest|fastest>` - defaults to `oldest`
+- `--limit <N>` - samples per page (default 10, max 100)
+- `--after <cursor>` - pagination cursor from the previous run
+- `--app-version <version>` - filter by app version string
+- `--update-id <id>` - filter by EAS update ID
 
 **Table layout:**
-- Summary header shows the metric name, time range, and total sample count across all versions (e.g. `TTI samples for the last 60 days — 1,234 total events`)
+- Summary header shows the metric name, time range, and total sample count across all versions (e.g. `TTI samples for the last 60 days - 1,234 total events`)
 - Columns: Value, App Version (with build number), Update (only when any sample has one), Platform, Device, Country, Timestamp
 - When `hasNextPage` is true, prints `Next page: --after <endCursor>` hint below the table
 - JSON output also includes `sessionId`, `easClientId`, and a `customParams` object per sample
@@ -151,19 +151,19 @@ eas observe:routes --app-version 1.2.0 --build-number 42
 # Narrow to specific routes (repeat the flag for multiple routes)
 eas observe:routes --route-name /new --route-name /settings
 
-# Pagination — each platform has its own cursor; pass the relevant endCursor
+# Pagination - each platform has its own cursor; pass the relevant endCursor
 eas observe:routes --after <cursor>
 ```
 
 **Routes-specific flags:**
-- `--metric <cold_ttr|warm_ttr|nav_tti>` — navigation metric(s) to display, can be repeated. Defaults to all three.
-- `--stat <median|p90|count>` — statistic(s) per metric. Aliases: `med` → `median`, `event_count` / `eventCount` → `count`.
-- `--limit <N>` — routes per page (default **50**, max **200**, different from `metrics`/`events` which default to 10).
-- `--after <cursor>` — pagination cursor from the previous run.
-- `--app-version <version>` — filter by app version string.
-- `--build-number <number>` — filter by app build number (routes-only).
-- `--route-name <name>` — filter by route name. Repeatable; only the listed routes are returned across both platforms. Duplicates are de-duplicated; omitting the flag returns all routes.
-- `--update-id <id>` — filter by EAS update ID.
+- `--metric <cold_ttr|warm_ttr|nav_tti>` - navigation metric(s) to display, can be repeated. Defaults to all three.
+- `--stat <median|p90|count>` - statistic(s) per metric. Aliases: `med` → `median`, `event_count` / `eventCount` → `count`.
+- `--limit <N>` - routes per page (default **50**, max **200**, different from `metrics`/`events` which default to 10).
+- `--after <cursor>` - pagination cursor from the previous run.
+- `--app-version <version>` - filter by app version string.
+- `--build-number <number>` - filter by app build number (routes-only).
+- `--route-name <name>` - filter by route name. Repeatable; only the listed routes are returned across both platforms. Duplicates are de-duplicated; omitting the flag returns all routes.
+- `--update-id <id>` - filter by EAS update ID.
 
 **Default stats:** `median` + `count` in the table; `median`, `p90`, `count` in JSON.
 
@@ -221,19 +221,19 @@ eas observe:events login_failed --after <cursor>
 ```
 
 **Events-specific flags:**
-- `--all-events` — when no event name argument is given, list all events instead of the name summary. Cannot be combined with an event name argument.
-- `--session-id <id>` — filter to events from a single session (events-only)
-- `--app-version <version>` — filter by app version string
-- `--update-id <id>` — filter by EAS update ID
-- `--limit <N>` — events per page (default 10, max 100)
-- `--after <cursor>` — pagination cursor
+- `--all-events` - when no event name argument is given, list all events instead of the name summary. Cannot be combined with an event name argument.
+- `--session-id <id>` - filter to events from a single session (events-only)
+- `--app-version <version>` - filter by app version string
+- `--update-id <id>` - filter by EAS update ID
+- `--limit <N>` - events per page (default 10, max 100)
+- `--after <cursor>` - pagination cursor
 
 **Table layout (event listings):**
 - Summary header: `<event-name> events <time range>` or `Custom events <time range>` for `--all-events`, with a total event count when available
 - Columns: Timestamp, Event (only when listing across multiple names), Severity (only when at least one event in the page has a severity), App Version (with build number), Platform, Device, Country
 - `Next page: --after <endCursor>` hint below the table when there is a next page
 
-**Empty-result helper:** if a specific event name is queried and returns no events, the command prints a yellow `No events found matching "<name>"` warning followed by the available event names + counts in the same time range — useful for fixing typos.
+**Empty-result helper:** if a specific event name is queried and returns no events, the command prints a yellow `No events found matching "<name>"` warning followed by the available event names + counts in the same time range - useful for fixing typos.
 
 **Truncation note:** the event-names summary may flag `Result is truncated; not all event names are shown.` when there are more names than the server returns in a single response.
 
