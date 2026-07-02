@@ -24,7 +24,7 @@ Modes:
 | eas-workflows | n/a | — | Output is `.eas/workflows/` YAML; assert on YAML content (and `workflow_validate` via the Expo MCP if available). |
 | expo-upgrade | static-only | — | An upgrade eval can run the static gate on the upgraded fixture — a strong signal. Needs a fixture pinned to an *older* SDK (pass e.g. `55` to make-fixture.sh). |
 | eas-update-insights | n/a | — | CLI/metrics interpretation; no app code output. |
-| eas-observe | expo-go (verify) | ios, android | `eas-observe` instrumentation is JS-level, but confirm the package works in Expo Go before relying on screenshots; fall back to static-only. |
+| eas-observe | expo-go (verify) | ios, android | `expo-observe` instrumentation is JS-level, but confirm the package works in Expo Go before relying on screenshots; fall back to static-only. |
 
 Entries marked "verify" haven't been validated against a real run yet — confirm on first use and update this table.
 

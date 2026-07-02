@@ -1,6 +1,6 @@
 # Run the migration as a goal loop
 
-Disclosed reference for [`web-to-native`](../SKILL.md) - the recommended way to drive the whole migration. The migration is a repeat-until-done loop (assess → nativize each screen → verify → check off), which is exactly the shape of a **goal loop**: a single objective re-injected every turn until the worklist is empty. This file carries a ready-shaped, migration-specific objective - and, crucially, the objective **re-reads this skill every iteration**, so the loop keeps following the playbook (and self-bootstraps the assess step if no worklist exists yet).
+Disclosed reference for [`expo-web-to-native`](../SKILL.md) - the recommended way to drive the whole migration. The migration is a repeat-until-done loop (assess → nativize each screen → verify → check off), which is exactly the shape of a **goal loop**: a single objective re-injected every turn until the worklist is empty. This file carries a ready-shaped, migration-specific objective - and, crucially, the objective **re-reads this skill every iteration**, so the loop keeps following the playbook (and self-bootstraps the assess step if no worklist exists yet).
 
 Use it in one of two modes depending on the agent you're running.
 
@@ -17,9 +17,9 @@ Write the filled-in objective to `migration-goal.md` in the project, then give t
 Fill the two `<…>` slots, then run or hand off verbatim. It is written to survive re-injection - it restates its own worklist, direction, and stop condition every turn.
 
 ```
-Goal: migrate <APP NAME> from web to a native Expo app by following the web-to-native skill, one screen per iteration, until done.
+Goal: migrate <APP NAME> from web to a native Expo app by following the expo-web-to-native skill, one screen per iteration, until done.
 
-Each iteration, FIRST re-read the playbook - plugins/expo/skills/web-to-native/SKILL.md (and its references) - then:
+Each iteration, FIRST re-read the playbook - plugins/expo/skills/expo-web-to-native/SKILL.md (and its references) - then:
 1. If migration-progress.md doesn't exist yet, do the skill's step 1 (Assess) to
    create the worklist, then stop. Otherwise open it and take the top unchecked
    item under "nativize-now"; if none are left unresolved (every nativize-now is

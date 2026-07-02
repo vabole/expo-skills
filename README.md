@@ -114,7 +114,7 @@ Free, open-source Expo SDK and React Native skills.
 
 ### Services & paid distribution
 
-Skills that use paid Expo Application Services (EAS) or paid app-store distribution.
+Skills whose core purpose uses paid Expo Application Services (EAS).
 
 | Skill | Use it for |
 | --- | --- |

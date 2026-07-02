@@ -1,6 +1,6 @@
 # False Friends: web idioms → native
 
-Disclosed reference for [`web-to-native`](../SKILL.md). A *false friend* is a web idiom that looks portable but isn't - it compiles in your head, then breaks (or silently no-ops) on native. Each row is `web idiom → native equivalent → the gotcha`. Reach for this in steps 3–5 of a migration, and whenever you're learning native after the web.
+Disclosed reference for [`expo-web-to-native`](../SKILL.md). A *false friend* is a web idiom that looks portable but isn't - it compiles in your head, then breaks (or silently no-ops) on native. Each row is `web idiom → native equivalent → the gotcha`. Reach for this in steps 3–5 of a migration, and whenever you're learning native after the web.
 
 This is the single source of truth for the mapping; the SKILL.md steps name a few high-traffic swaps but defer the full list here.
 

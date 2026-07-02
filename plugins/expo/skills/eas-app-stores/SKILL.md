@@ -1,6 +1,6 @@
 ---
 name: eas-app-stores
-description: EAS service (paid). Ship Expo apps to the app stores with EAS - build and submit to the iOS App Store, Google Play Store, and TestFlight, configure eas.json build and submit profiles, manage app versions and build numbers, and publish App Store metadata and ASO. Use whenever the user is preparing a production build, running eas build or eas submit, shipping to TestFlight, releasing or rolling out to the app stores, bumping version or build numbers, or setting up store listing metadata. For deploying an Expo website or API routes, use the eas-hosting skill.
+description: EAS service (paid). Deploy Expo apps to the app stores with EAS - build and submit to the iOS App Store, Google Play Store, and TestFlight, configure eas.json build and submit profiles, manage app versions and build numbers, and publish App Store metadata and ASO. Use whenever the user wants to deploy, release, or ship an app to production or the app stores, is preparing a production build, running eas build or eas submit, shipping to TestFlight, bumping version or build numbers, or setting up store listing metadata. For deploying an Expo website or API routes, use the eas-hosting skill.
 version: 1.0.0
 license: MIT
 ---
@@ -15,7 +15,7 @@ This skill covers building and releasing Expo apps to the iOS App Store, Google 
 
 Consult these resources as needed:
 
-- ./references/workflows.md -- CI/CD workflows for automated deployments and PR previews
+- ./references/workflows.md -- CI/CD workflows for automated store releases and PR previews
 - ./references/testflight.md -- Submitting iOS builds to TestFlight for beta testing
 - ./references/app-store-metadata.md -- Managing App Store metadata and ASO optimization
 - ./references/play-store.md -- Submitting Android builds to Google Play Store
@@ -122,15 +122,9 @@ Standard `eas.json` for production deployments:
 - Configure tracks: internal → closed → open → production
 - See ./references/play-store.md for detailed setup
 
-### Web
+## Automated Releases
 
-- EAS Hosting provides preview URLs for PRs
-- Production deploys to your custom domain
-- See ./references/workflows.md for CI/CD automation
-
-## Automated Deployments
-
-EAS Workflows automate the build → submit → update → deploy pipeline for CI/CD. See ./references/workflows.md for deployment-oriented examples. To author or validate workflow YAML, use the `eas-workflows` skill - it works from the live workflow schema.
+EAS Workflows automate the build → submit → update pipeline for CI/CD. See ./references/workflows.md for store-release examples. To author or validate workflow YAML, use the `eas-workflows` skill - it works from the live workflow schema.
 
 ## Version Management
 

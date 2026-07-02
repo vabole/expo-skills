@@ -15,7 +15,8 @@ Consult these resources as needed:
 
 ```
 references/
-  expo-router-loaders.md   Route-level data loading with Expo Router loaders (web, SDK 55+)
+  expo-router-loaders.md        Route-level data loading with Expo Router loaders (web, SDK 55+)
+  offline-and-cancellation.md   NetInfo network status, offline-first React Query, AbortController
 ```
 
 ## When to Use
@@ -262,40 +263,7 @@ const getValidToken = async (): Promise<string> => {
 
 ### 5. Offline Support
 
-**Check network status**:
-
-```tsx
-import NetInfo from "@react-native-community/netinfo";
-
-// Hook for network status
-function useNetworkStatus() {
-  const [isOnline, setIsOnline] = useState(true);
-
-  useEffect(() => {
-    return NetInfo.addEventListener((state) => {
-      setIsOnline(state.isConnected ?? true);
-    });
-  }, []);
-
-  return isOnline;
-}
-```
-
-**Offline-first with React Query**:
-
-```tsx
-import { onlineManager } from "@tanstack/react-query";
-import NetInfo from "@react-native-community/netinfo";
-
-// Sync React Query with network status
-onlineManager.setEventListener((setOnline) => {
-  return NetInfo.addEventListener((state) => {
-    setOnline(state.isConnected ?? true);
-  });
-});
-
-// Queries will pause when offline and resume when online
-```
+Network-status detection with NetInfo and offline-first React Query setup: see [./references/offline-and-cancellation.md](./references/offline-and-cancellation.md).
 
 ---
 
@@ -361,7 +329,7 @@ export const apiClient = {
 **Important notes**:
 
 - Only variables prefixed with `EXPO_PUBLIC_` are exposed to the client bundle
-- Never put secrets (API keys with write access, database passwords) in `EXPO_PUBLIC_` variables-they're visible in the built app
+- Never put secrets (API keys with write access, database passwords) in `EXPO_PUBLIC_` variables - they're visible in the built app
 - Environment variables are inlined at **build time**, not runtime
 - Restart the dev server after changing `.env` files
 - For server-side secrets in API routes, use variables without the `EXPO_PUBLIC_` prefix
@@ -386,31 +354,7 @@ export {};
 
 ### 7. Request Cancellation
 
-**Cancel on unmount**:
-
-```tsx
-useEffect(() => {
-  const controller = new AbortController();
-
-  fetch(url, { signal: controller.signal })
-    .then((response) => response.json())
-    .then(setData)
-    .catch((error) => {
-      if (error.name !== "AbortError") {
-        setError(error);
-      }
-    });
-
-  return () => controller.abort();
-}, [url]);
-```
-
-**With React Query** (automatic):
-
-```tsx
-// React Query automatically cancels requests when queries are invalidated
-// or components unmount
-```
+AbortController on unmount (React Query cancels automatically): see [./references/offline-and-cancellation.md](./references/offline-and-cancellation.md).
 
 ---
 

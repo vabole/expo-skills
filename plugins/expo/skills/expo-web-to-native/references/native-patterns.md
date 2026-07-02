@@ -1,6 +1,6 @@
 # Native patterns: redesigning web UX for native
 
-Disclosed reference for [`web-to-native`](../SKILL.md), step 4. `false-friends.md` translates *idioms* (`div` → `View`); this translates *UX patterns* - a web interaction into its native equivalent. Step 4 isn't a port, it's this redesign.
+Disclosed reference for [`expo-web-to-native`](../SKILL.md), step 4. `false-friends.md` translates *idioms* (`div` → `View`); this translates *UX patterns* - a web interaction into its native equivalent. Step 4 isn't a port, it's this redesign.
 
 **Reach for `@expo/ui` first.** It renders real SwiftUI (iOS) and Jetpack Compose (Android), so its components look and feel *exactly* like the OS - the difference between "native-ish RN" and "indistinguishable from an app Apple/Google shipped." See the `expo-ui` skill. Drop to styled RN primitives only for what `@expo/ui` doesn't cover: custom layouts (chat bubbles, bespoke cards) and **large data lists** (`@expo/ui` `List` is a JS-thread node per item - use `FlashList`/`FlatList` for feeds). `@expo/ui` runs in **Expo Go** (SDK 56+) - no dev build needed; reach for a dev build (the `expo-dev-client` skill) only for *custom* native modules.
 

@@ -97,7 +97,7 @@ Add `agents/openai.yaml` with `display_name`, `short_description` (paid skills p
 Add it to the correct group (framework vs paid) in all of:
 
 - `skills.sh.json`
-- `plugins/expo/README.md` - both **When to Use** and **Skills Included**
+- `plugins/expo/README.md` - **What This Plugin Does**, **When to Use**, and **Skills Included**
 - `plugins/expo/skills/README.md`
 - `README.md`
 
@@ -120,6 +120,10 @@ bun scripts/check-plugin-version-bump.ts origin/main
 
 Also run `python3 -m json.tool <file>` on any JSON you edited, and if the skill ships `scripts/`,
 run that skill's own validation.
+
+`check-skill-limits.ts` enforces more than the size caps: the naming rule (step 2), the category
+prefixes and paid costs callout (step 4), the Codex agent file and its paid prefix (step 7), and
+the `skills.sh.json` grouping (step 8) all fail CI when violated.
 
 ### Conventions
 

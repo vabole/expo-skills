@@ -1,6 +1,6 @@
 # Verify a migrated screen against the running web app
 
-Disclosed reference for [`web-to-native`](../SKILL.md), steps 3–4. Verification means **running both apps and comparing the same screen** - the native port beside the web original. A clean compile or a green `expo export` proves nothing - a screen can build and still render blank or mis-render. This parity check is the gate the strangle loop runs each iteration.
+Disclosed reference for [`expo-web-to-native`](../SKILL.md), steps 3–4. Verification means **running both apps and comparing the same screen** - the native port beside the web original. A clean compile or a green `expo export` proves nothing - a screen can build and still render blank or mis-render. This parity check is the gate the strangle loop runs each iteration.
 
 Two agents drive it, and this skill is **opinionated**: it requires both and installs them rather than falling back to manual screenshots.
 

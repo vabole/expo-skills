@@ -1,6 +1,6 @@
 ---
 name: eas-hosting
-description: EAS service (paid). Deploy Expo websites and Expo Router API routes to EAS Hosting - export the web bundle, run eas deploy for production and PR preview URLs, manage environment secrets and custom domains, and work within the Cloudflare Workers runtime. Also covers authoring API routes (+api.ts handlers, HTTP methods, request handling, CORS). Use when deploying an Expo web app or API routes, setting up EAS Hosting, or configuring hosting environments and domains.
+description: EAS service (paid). Deploy Expo websites and Expo Router API routes to EAS Hosting - export the web bundle, run eas deploy for production and PR preview URLs, manage environment secrets and custom domains, and work within the Cloudflare Workers runtime. Also covers authoring API routes (+api.ts handlers, HTTP methods, request handling, CORS). Use when deploying an Expo web app or API routes, setting up EAS Hosting, or configuring hosting environments and domains. Not for native builds or store releases - use the eas-app-stores skill for those.
 version: 1.0.0
 license: MIT
 ---
@@ -254,6 +254,46 @@ eas env:create --name OPENAI_API_KEY --value sk-xxx --environment production
 ### Custom Domain
 
 Configure in `eas.json` or Expo dashboard.
+
+### Automate with EAS Workflows
+
+Deploy the website (and API routes) on every push to main with a `type: deploy` workflow:
+
+`.eas/workflows/deploy.yml`
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+# https://docs.expo.dev/eas/workflows/syntax/#deploy
+jobs:
+  deploy_web:
+    type: deploy
+    params:
+      prod: true
+```
+
+Preview deploys for pull requests use the same job type with `prod: false`:
+
+```yaml
+name: Web PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  preview:
+    type: deploy
+    params:
+      prod: false
+```
+
+To author or validate workflow YAML beyond these examples, use the `eas-workflows` skill.
 
 ## EAS Hosting Runtime (Cloudflare Workers)
 

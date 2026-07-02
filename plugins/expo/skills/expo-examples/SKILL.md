@@ -88,7 +88,8 @@ When the user already has an app, **add only what the example introduces; never 
 ## Related skills
 
 - Tailwind / NativeWind styling → `expo-tailwind-setup`
-- Native UI components → `expo-router`
+- Native UI components → `expo-ui`
+- Navigation, screens, and styling → `expo-router`
 - Authoring a native module → `expo-module`
 - Upgrade the SDK before adopting a latest-SDK example → `expo-upgrade`
 

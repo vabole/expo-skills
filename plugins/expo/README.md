@@ -2,7 +2,7 @@
 
 Official AI agent skills from the Expo team for building, deploying, upgrading, and debugging Expo apps.
 
-Skills come in two groups so the free vs paid boundary stays clear: open-source **framework** skills, and **services & paid distribution** skills that use Expo Application Services (EAS) or paid app-store distribution. Each services skill opens with a costs/plan-limits note.
+Skills come in two groups so the free vs paid boundary stays clear: open-source **framework** skills, and **services & paid distribution** skills whose core purpose uses paid Expo Application Services (EAS). Each services skill opens with a costs/plan-limits note.
 
 ## What This Plugin Does
 
@@ -13,7 +13,6 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - Explains native iOS controls, SF Symbols, animations, and visual effects
 - Covers `@expo/ui` native components (universal, SwiftUI, and Jetpack Compose)
 - Covers data fetching patterns with React Query, offline support, and Expo Router loaders
-- Guides API route authoring in Expo Router (deploying to EAS Hosting is a paid step)
 - Helps set up Tailwind CSS v4 with NativeWind v5
 - Explains DOM components for running web code in native apps
 - Covers Expo native modules, iOS App Clips, and brownfield integration into existing native apps
@@ -28,7 +27,8 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - Helps write and validate EAS Workflow YAML files for CI/CD
 - Checks EAS Update health, adoption, crash rates, and payload size
 - Tracks production performance with EAS Observe
-- Covers web and API route deployment with EAS Hosting
+- Covers website and API route authoring and deployment with EAS Hosting
+- Runs and drives your app on remote iOS/Android simulators on EAS cloud
 
 ## When to Use
 
@@ -56,6 +56,7 @@ Skills come in two groups so the free vs paid boundary stays clear: open-source 
 - Inspecting EAS Update rollout health and adoption
 - Tracking startup, navigation, and event performance with EAS Observe
 - Deploying a website or Expo Router API routes to EAS Hosting
+- Running your app on a remote cloud simulator when no local simulator is available
 
 ## Skills Included
 

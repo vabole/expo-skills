@@ -1,6 +1,6 @@
 ---
 name: expo-router
-description: Framework (OSS). Complete guide for building beautiful apps with Expo Router. Covers fundamentals, styling, components, navigation, animations, patterns, and native tabs.
+description: Framework (OSS). Complete guide for building beautiful native apps and UI with Expo Router. Covers fundamentals, styling, components, navigation, animations, patterns, and native tabs. For the @expo/ui native component package, use the expo-ui skill.
 version: 1.0.1
 license: MIT
 ---
