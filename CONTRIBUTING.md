@@ -124,9 +124,3 @@ run that skill's own validation.
 `check-skill-limits.ts` enforces more than the size caps: the naming rule (step 2), the category
 prefixes and paid costs callout (step 4), the Codex agent file and its paid prefix (step 7), and
 the `skills.sh.json` grouping (step 8) all fail CI when violated.
-
-### Conventions
-
-- MIT license for every skill; use `@expo.io` or `@expo.dev` author emails.
-- Keep `references/` next to the skill that uses them.
-- Don't broaden a skill's scope or trigger intent when editing it - keep changes focused.
